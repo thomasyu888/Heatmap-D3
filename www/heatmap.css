@@ -1,0 +1,80 @@
+.node circle {
+  fill: #fff;
+    stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.annotations {
+  position: absolute;
+  left: 150px;
+  top: 200px;
+}
+.rootDend {
+    fill: none;
+  stroke: #AAA;
+    stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #AAA;
+    stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+rect.zoom {
+  stroke: steelblue;
+  fill-opacity: 0.2;
+}
+
+rect.hoverover {
+  stroke-width:1px;
+  stroke: white;
+}
+
+text.hover {
+  font-weight: bold;
+  font-size: 9px;
+}
+polyline.hover {
+  stroke: black;
+  stroke-width:3px;
+}
+.xLabel {
+  font-size:4px;
+  writing-mode: tb;
+}
+.yLabel {
+  font-size: 4px;
+}
+.d3-heatmap {
+  position: relative;
+  width: 1500px;
+  height: 800px;
+  border: 1px solid #CCC;
+  overflow: hidden;
+}
+.inner {
+  position: relative;
+  top: -70px;
+}
+
+.colDend {
+  position: absolute;
+  top: 0;
+  left: 150px;
+}
+.rowDend {
+  position: absolute;
+  left: 0;
+  top: 220px;
+}
+.colormap {
+  position: absolute;
+  left: 150px;
+  top: 220px;
+  shape-rendering: crispEdges;
+}

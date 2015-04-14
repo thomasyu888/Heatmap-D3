@@ -37,8 +37,6 @@ function heatmap(selector, data) {
         .style('font-size','10px');  
 
 
-        
-
     function heatmapGrid(svg, data, xStart,yStart) {
         var j=0;
 
@@ -242,7 +240,7 @@ function heatmap(selector, data) {
             
             //All the ends of the leafs (This is for the zoom function)
             var leafLink = link.filter(function(d,i) {
-                if (d.target.name.length>7) { return d.target; }
+                if (d.target.name.substring(0,4)!="node") { return d.target; }
             })
             .attr("class",function(d,i) {
                 return "ends_"+(rotated ? "Y" : "X")+(i);

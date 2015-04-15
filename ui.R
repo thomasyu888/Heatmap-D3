@@ -27,6 +27,13 @@ shinyUI(pageWithSidebar(
   
     headerPanel('Heatmap'),
     sidebarPanel(
+      strong("Interactive heatmap with hover-over capability and zoom feature"),
+      p('The hover-over ability shows the X-label, Y-label and metadata
+        associated to where the mouse is on the heatmap'),
+      p('The zoom feature allows the user to select an area on either the heatmap 
+        or dendrogram and the heatmap will be redrawn (Selection only works either on
+        dendrogram or heatmap, not both!)')
+      
       #verbatimTextOutput('hovered')
     ),
     mainPanel(

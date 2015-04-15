@@ -33,11 +33,9 @@ shinyUI(pageWithSidebar(
       p('The zoom feature allows the user to select an area on either the heatmap 
         or dendrogram and the heatmap will be redrawn (Selection only works either on
         dendrogram or heatmap, not both!)')
-      
-      #verbatimTextOutput('hovered')
     ),
     mainPanel(
       heatmapOutput('heatmap')
     )
-)
+  )
 )

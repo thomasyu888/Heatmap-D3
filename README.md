@@ -1,5 +1,5 @@
 # Shiny-d3-Heatmap
-Interactive Heatmap with hover over ability and zoom by selection capability.  Run heatmapCalc first, then heatmap.  This will display the interactive heatmap. Data and metadata can be replaced with your own data from csv files.
+Interactive Heatmap with hover over ability and zoom by selection capability.  
 
 Huge thanks to Joe Cheng's d3-heatmap example.  This is an extension of his work
 

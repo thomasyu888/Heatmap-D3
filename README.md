@@ -1,5 +1,5 @@
 # Shiny-d3-Heatmap
-Interactive Heatmap with hover over ability and zoom by selection capability.  Should run with this R:  
+Interactive Heatmap with hover over ability and zoom by selection capability.  Should run with this in R:  
 
 >install.packages("shiny")
 

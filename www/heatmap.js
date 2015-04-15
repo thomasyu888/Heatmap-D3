@@ -87,7 +87,7 @@ function heatmap(selector, data) {
                     .style('left', (d3.event.pageX-155)+'px')
                     .style('background','white')
                     .style('display','block')
-                    .style('opacity',0.8)
+                    .style('opacity',0.6)
                     .html(output)        
             })
               
@@ -350,7 +350,7 @@ function heatmap(selector, data) {
                             //Get the data selected and send it back to heatmaprect
                             for (i = xStart; i<xFinish; i++) {
                                 newxLab.push(dataset.cols[i]);
-                                newAnnot.push(data.metadata[i])
+                                newAnnot.push(data.metadata[i+oldxStart])
                                 if (newxDend != undefined) {
                                     newxDend.push(d3.select(".ends_X"+i).attr("id"))
                                 }
@@ -404,5 +404,4 @@ function heatmap(selector, data) {
             });
 
     }
-
 }

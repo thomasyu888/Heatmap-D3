@@ -1,6 +1,6 @@
 
-genes <- read.csv(file="PCBC_geneExpr_data.csv",head=TRUE,row.names=1)
-metadatas <- read.csv(file="metadata.csv",head=TRUE,row.names=1)
+genes <- read.csv(file="Example.csv",head=TRUE,row.names=1)
+metadatas <- read.csv(file="metaExample.csv",head=TRUE,row.names=1)
 
 #genes <- read.csv(file="Example.csv",head=TRUE,row.names=1)
 #metadatas <- read.csv(file="metaExample.csv",head=TRUE,row.names=1)

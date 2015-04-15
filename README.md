@@ -20,15 +20,11 @@ http://www.totallab.com/products/samespots/support/faq/dendrogram.aspx
 
 https://gist.github.com/jasondavies/3689931
 
-https://github.com/jcheng5/d3-heatmap/blob/master/R/heatmap.R
-
 http://stackoverflow.com/questions/12925266/drawing-heatmap-with-d3
 
 Dendrogram
 
 http://stackoverflow.com/questions/17837973/how-to-turn-a-hclust-object-into-json-for-d3
-
-https://github.com/jcheng5/d3-heatmap/blob/master/hclust.R
 
 https://stat.ethz.ch/R-manual/R-patched/library/stats/html/hclust.html
 

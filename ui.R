@@ -31,8 +31,8 @@ shinyUI(pageWithSidebar(
       p('The hover-over ability shows the X-label, Y-label and metadata
         associated to where the mouse is on the heatmap'),
       p('The zoom feature allows the user to select an area on either the heatmap 
-        or dendrogram and the heatmap will be redrawn (Selection only works either on
-        dendrogram or heatmap, not both!)')
+        or dendrogram and the heatmap will be redrawn (Note: There is no fancy way
+        to zoom out. Refresh browser/reload app to zoom out)')
     ),
     mainPanel(
       heatmapOutput('heatmap')

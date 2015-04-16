@@ -87,7 +87,7 @@ function heatmap(selector, data) {
                     .style('left', (d3.event.pageX-155)+'px')
                     .style('background','white')
                     .style('display','block')
-                    .style('opacity',0.6)
+                    .style('opacity',0.8)
                     .html(output)        
             })
               

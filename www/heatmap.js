@@ -26,6 +26,7 @@ function heatmap(selector, data) {
         .domain(mainDat.domain)
         .range(mainDat.colors);
 
+    //Creates everything for the heatmap
     var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-130);
     var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-100, 250);
     var heatmap = heatmapGrid(el.select('svg.colormap'), mainDat,0,0);
@@ -123,25 +124,11 @@ function heatmap(selector, data) {
             .attr('y',height-127)
             .text(function(d) { return d; })
             .attr("id", function(d,i) { return "xLab" + i; })
-                    //Select rectangle on heatmap
-        var selectHeat = selectArea(colmap,
-                el.select('svg.colormap'),
-                el.select('svg.annotations'),
-                el.select('svg.colormap'),
-                data,undefined,xStart,yStart);
-
-        var selectYDend = selectArea(rowDend,
-                el.select('svg.rowDend'),
-                el.select('svg.annotations'),
-                el.select('svg.colormap'),
-                data,1,xStart,yStart);
-
-        var selectXDend = selectArea(colDend,
-                el.select('svg.colDend'),
-                el.select('svg.annotations'),
-                el.select('svg.colormap'),
-                data,2,xStart,yStart);
-
+        
+        //Select rectangle on heatmap and dendrograms
+        var selectHeat = selectArea(colmap,el.select('svg.colormap'),data,undefined,xStart,yStart);
+        var selectYDend = selectArea(rowDend,el.select('svg.rowDend'),data,1,xStart,yStart);
+        var selectXDend = selectArea(colDend,el.select('svg.colDend'),data,2,xStart,yStart);
     }
 
     function dendrogram(svg, data, rotated, width, height,dend,shift,range) {
@@ -206,15 +193,9 @@ function heatmap(selector, data) {
                 .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
                 .attr("id",function(d,i) { return i; });
 
-            //var anchor = rotated ? "end" : "start";
-            //var dx = rotated ? -3 : 3;
+            //All the ending nodes
             var leafNode = node.filter(function(d, i){ return !d.children; })
-            //.append("text")
-            //.attr("dx", dx)
-            //.attr("dy", 3)
-            //.style("text-anchor", anchor)
-            //.text(function(d) { return d.name; });
-            
+      
             //All the ends of the leafs (This is for the zoom function)
             var leafLink = link.filter(function(d,i) {
                 if (d.target.name.substring(0,4)!="node") { return d.target; }
@@ -275,7 +256,7 @@ function heatmap(selector, data) {
     };
 
     /////ZOOM INTO RECTANGLE/////
-    function selectArea(area, svg, annotesvg, heatmap, dataset,num,oldxStart,oldyStart) {
+    function selectArea(area,svg,dataset,num,oldxStart,oldyStart) {
         svg
             .attr("width",width)
             .attr("height",height)
@@ -362,15 +343,16 @@ function heatmap(selector, data) {
                             d3.selectAll('.rootDend').remove();
                             oldxStart += xStart
                             oldyStart += yStart
+
                             //olsxStart + xStart because the dendrogram is translated
-                            heatmapGrid(heatmap, dataset,oldxStart,oldyStart);
-                            //New dendrograms
-                            //Vertical dendrogram
+                            heatmapGrid(el.select('svg.colormap'),dataset,oldxStart,oldyStart);                            
+                            //New Vertical dendrogram
                             var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-130,newyDend,oldyStart,y);
-                            //Horizontal dendrogram
+                           
+                            //New Horizontal dendrogram
                             var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-100, 250,newxDend,oldxStart,x);
                             //New annotation bar
-                            drawAnnotate(annotesvg, newAnnot);
+                            drawAnnotate(el.select('svg.annotations'), newAnnot);
                             zoomDat = [];
                             //remove blue select rectangle
                             rect.remove();

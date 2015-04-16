@@ -338,29 +338,23 @@ function heatmap(selector, data) {
                             if (num==1) {
                                 xStart = 0;
                                 xFinish = dataset.dim[1]
-                                newxDend = undefined;
                             //If the X dendrogram is selected, make the y dendrogram undefined 
                             //because I dont want the y dendrogram to change
                             } else if (num==2) {
                                 yStart = 0;
                                 yFinish = dataset.dim[0]
-                                newyDend = undefined;
                             }
 //////////////////////////////////////
                             //Get the data selected and send it back to heatmaprect
                             for (i = xStart; i<xFinish; i++) {
                                 newxLab.push(dataset.cols[i]);
                                 newAnnot.push(data.metadata[i+oldxStart])
-                                if (newxDend != undefined) {
-                                    newxDend.push(d3.select(".ends_X"+i).attr("id"))
-                                }
+                                newxDend.push(d3.select(".ends_X"+i).attr("id"))
                             }
                             //Get selected Data
                             for (i=yStart;i<yFinish; i++) {
                                 newyLab.push(dataset.rows[i]);
-                                if (newyDend != undefined) {
-                                    newyDend.push(d3.select(".ends_Y"+i).attr("id"))
-                                }
+                                newyDend.push(d3.select(".ends_Y"+i).attr("id"))
                                 for (j=xStart; j<xFinish; j++) {
                                     zoomDat.push(dataset.data[i*cols+j]);
                                 }

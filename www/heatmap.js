@@ -213,7 +213,7 @@ function heatmap(selector, data) {
         };
     }
 
-
+//This step doesn't really need to be here either. The color computation for the metadata can be done in R.
     function annotScale(selectedDat) { 
         var scaling;
         //Changes the color scale for annotation bar

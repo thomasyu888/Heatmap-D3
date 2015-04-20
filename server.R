@@ -2,8 +2,6 @@
 genes <- read.csv(file="Example.csv",head=TRUE,row.names=1)
 metadatas <- read.csv(file="metaExample.csv",head=TRUE,row.names=1)
 
-#genes <- read.csv(file="Example.csv",head=TRUE,row.names=1)
-#metadatas <- read.csv(file="metaExample.csv",head=TRUE,row.names=1)
 data <- list(main = genes,metadatas = metadatas)
 
 

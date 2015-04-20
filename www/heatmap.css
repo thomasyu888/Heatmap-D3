@@ -4,6 +4,20 @@
   stroke-width: 1.5px;
 }
 
+.info {
+  position:absolute;
+  display:none;
+  font-size:10px;
+
+}
+div.hover {
+  background:white;
+  display:inline-block;
+  opacity:0.8;
+  white-space:nowrap;
+  z-index:5;
+
+}
 .annotations {
   position: absolute;
   left: 150px;
@@ -35,14 +49,12 @@ rect.hoverover {
   stroke: white;
 }
 
+
 text.hover {
   font-weight: bold;
   font-size: 9px;
 }
-polyline.hover {
-  stroke: black;
-  stroke-width:3px;
-}
+
 .xLabel {
   font-size:4px;
   writing-mode: tb;
@@ -72,9 +84,21 @@ polyline.hover {
   left: 0;
   top: 220px;
 }
+polyline.hover {
+  stroke: black;
+  stroke-width:3px;
+}
 .colormap {
   position: absolute;
   left: 150px;
   top: 220px;
   shape-rendering: crispEdges;
+}
+.stopselect{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

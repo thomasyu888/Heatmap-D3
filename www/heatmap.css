@@ -13,7 +13,7 @@
 div.hover {
   background:white;
   display:inline-block;
-  opacity:0.8;
+  opacity:0.9;
   white-space:nowrap;
   z-index:5;
 
@@ -94,7 +94,8 @@ polyline.hover {
   top: 220px;
   shape-rendering: crispEdges;
 }
-.stopselect{
+
+.nohighlight {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

@@ -2,6 +2,7 @@ function heatmap(selector, data) {
     var el = d3.select(selector);
   //(function() {
     var inner = el.append("div").classed("inner", true);
+    //info is hover over 
     var info = inner.append("div").classed("info", true);
     var colDend = inner.append("svg").classed("colDend", true);
     var rowDend = inner.append("svg").classed("rowDend", true);
@@ -9,35 +10,46 @@ function heatmap(selector, data) {
     var annotation = inner.append("svg").classed("annotations",true);
   //})();
 
-    var width = 1300;
-    var height = 600;
+
+    
     var mainDat = data.matrix;
     var metaDat = data.metadata;
+
+    //If there are over 1000 genes, that is way too many data points. This is the max
+    if (mainDat.dim[0]>1000) {
+        alert("Code not optimal for data that is over 1000x203 data points!")
+        return function(){};
+    }
+
+    var width = 1300;
+    var height = 600;
+    var margintop = 130;
+    var marginleft = 100;
+    //if there are more than 100 x values, it doesn't make sense to show the label
+    if (mainDat.dim[0] > 100) {
+        marginleft=  0;
+    }
+    
     //Set xScale and yScale
-    var xScale = d3.scale.linear().range([0, width-100]);
-    var yScale = d3.scale.linear().range([0, height-130]);
+    var xScale = d3.scale.linear().range([0, width-marginleft]);
+    var yScale = d3.scale.linear().range([0, height-margintop]);
 
     //This is needed for the dendrogram zooming (Hack for now)
-    var xGlobal = d3.scale.linear().domain([0,mainDat.dim[1]]).range([0,width-100])
-    var yGlobal = d3.scale.linear().domain([0,mainDat.dim[0]]).range([0,height-130])
+    var xGlobal = d3.scale.linear().domain([0,mainDat.dim[1]])
+    var yGlobal = d3.scale.linear().domain([0,mainDat.dim[0]]).range([0,height-margintop])
+    
     //Heatmap colors
     var color = d3.scale.linear()
         .domain(mainDat.domain)
         .range(mainDat.colors);
 
     //Creates everything for the heatmap
-    var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-130);
-    var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-100, 250);
+    var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-margintop);
+    var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250);
     var heatmap = heatmapGrid(el.select('svg.colormap'), mainDat,0,0);
     var annotate = drawAnnotate(el.select('svg.annotations'),metaDat);
-    //This is for the hoverover ability
-    /*
-    var label = d3.select('body')
-        .append('div')
-        .style('position','absolute')
-        .style('display','none')
-        .style('font-size','10px');
-*/
+
+
     function heatmapGrid(svg, data, xStart,yStart) {
         // Check for no data
         if (data.length === 0) {
@@ -47,7 +59,7 @@ function heatmap(selector, data) {
         var rows = data.dim[0]; //y
         var main = data.data;
 
-        xScale.domain([0, cols])
+        xScale.domain([0, cols]).range([0,width-marginleft])
         yScale.domain([0, rows])
 
         svg = svg
@@ -97,18 +109,20 @@ function heatmap(selector, data) {
             });
     
         //Labels of genes
-        var yAxis =svg.selectAll('.yLabel').data(data.rows);
-            yAxis.enter().append('svg:text').classed('Labels',true);
-            yAxis.exit().remove();
-            yAxis
-            .attr('class','yLabel')
-            .classed('nohighlight',true)
-            .attr('x',width-97)
-            .attr('y', function(d,i) {
-                return yScale(i)+2+(yScale(i+1)-yScale(i))/2;
-            })
-            .text(function(d) { return d; })
-            .attr("id", function(d,i) { return "yLab" + i; });
+        if (marginleft!=0) {
+            var yAxis =svg.selectAll('.yLabel').data(data.rows);
+                yAxis.enter().append('svg:text').classed('Labels',true);
+                yAxis.exit().remove();
+                yAxis
+                .attr('class','yLabel')
+                .classed('nohighlight',true)
+                .attr('x',width-97)
+                .attr('y', function(d,i) {
+                    return yScale(i)+2+(yScale(i+1)-yScale(i))/2;
+                })
+                .text(function(d) { return d; })
+                .attr("id", function(d,i) { return "yLab" + i; });
+        }
 
         //Label of patient
         var xAxis = svg.selectAll('.xLabel').data(data.cols);
@@ -127,6 +141,7 @@ function heatmap(selector, data) {
         //Select rectangle on heatmap and dendrograms
         var selectHeat = selectArea(colmap,el.select('svg.colormap'),data,undefined,xStart,yStart);
         var selectYDend = selectArea(rowDend,el.select('svg.rowDend'),data,1,xStart,yStart);
+        
         var selectXDend = selectArea(colDend,el.select('svg.colDend'),data,2,xStart,yStart);
     }
 
@@ -232,7 +247,7 @@ function heatmap(selector, data) {
 
   function drawAnnotate(svg,data) {
         svg
-            .attr("width",width-100)
+            .attr("width",width-marginleft)
             .attr("height",10)
 
         var scaling = annotScale(data);
@@ -334,10 +349,15 @@ function heatmap(selector, data) {
                             dataset.rows = newyLab;
                             dataset.cols = newxLab;
                             dataset.data = zoomDat;
-
+                            
+                            if (dataset.dim[0] <100) {
+                                marginleft=100;
+                            }
 //////////////////////////////////////////////
+                            xGlobal.range([0,width-marginleft])
                             var x = xGlobal(1);
                             var y = yGlobal(1);
+
 ////// THIS is the problem/////////Deleted the dendrograms ///THIS SLOWS DOWN THE PROGRAM
                             d3.selectAll('.rootDend').remove();
                             oldxStart += xStart
@@ -349,7 +369,7 @@ function heatmap(selector, data) {
                             var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-130,newyDend,oldyStart,y);
                            
                             //New Horizontal dendrogram
-                            var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-100, 250,newxDend,oldxStart,x);
+                            var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250,newxDend,oldxStart,x);
                             //New annotation bar
                             drawAnnotate(el.select('svg.annotations'), newAnnot);
                             zoomDat = [];

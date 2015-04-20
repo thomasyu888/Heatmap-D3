@@ -102,6 +102,7 @@ function heatmap(selector, data) {
             yAxis.exit().remove();
             yAxis
             .attr('class','yLabel')
+            .classed('nohighlight',true)
             .attr('x',width-97)
             .attr('y', function(d,i) {
                 return yScale(i)+2+(yScale(i+1)-yScale(i))/2;
@@ -115,6 +116,7 @@ function heatmap(selector, data) {
             xAxis.exit().remove();
             xAxis
             .attr('class', 'xLabel')
+            .classed('nohighlight',true)
             .attr('x', function(d,i) {
                 return xScale(i)+(xScale(i+1)-xScale(i))/2;
             }) 

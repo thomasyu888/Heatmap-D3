@@ -1,6 +1,5 @@
 function heatmap(selector, data) {
     var el = d3.select(selector);
-  
   //(function() {
     var inner = el.append("div").classed("inner", true);
     var info = inner.append("div").classed("info", true);
@@ -32,12 +31,13 @@ function heatmap(selector, data) {
     var heatmap = heatmapGrid(el.select('svg.colormap'), mainDat,0,0);
     var annotate = drawAnnotate(el.select('svg.annotations'),metaDat);
     //This is for the hoverover ability
+    /*
     var label = d3.select('body')
         .append('div')
         .style('position','absolute')
         .style('display','none')
-        .style('font-size','10px');  
-
+        .style('font-size','10px');
+*/
     function heatmapGrid(svg, data, xStart,yStart) {
         // Check for no data
         if (data.length === 0) {
@@ -70,7 +70,7 @@ function heatmap(selector, data) {
                 d3.select("#yLab"+j).classed("hover",true);
                 d3.select("#xLab"+i%cols).classed("hover",true);
                 d3.select(this).classed("hoverover",true);
-                //Dendrogram is not recalculated, so xStart and yStart have to be passed in so that 
+                //xStart and yStart have to be passed in so that 
                 //the hoverover works for the dendrogram
                 d3.select(".ends_Y"+(j+yStart)).classed("hover",true);
                 d3.select(".ends_X"+(i%cols+xStart)).classed("hover",true);
@@ -78,14 +78,12 @@ function heatmap(selector, data) {
                 output = 'Gene loci: '+ data.rows[j]+'<br>Level of expression: '+d+'<br>ID: '+ data.cols[i%cols]
                         +'<br>State: '+metaDat[i%cols+xStart];
                                
-                label
+                info.classed("hover",true)
                     //event.page gives current cursor location
-                    .style('top', (d3.event.pageY-90)+'px')
-                    .style('left', (d3.event.pageX-155)+'px')
-                    .style('background','white')
-                    .style('display','block')
-                    .style('opacity',0.8)
-                    .html(output)        
+                    .style('top', (d3.event.pageY-75)+'px')
+                    .style('left', (d3.event.pageX-490)+'px')
+                    .html(output)
+        
             })
             .on('mouseout', function(d,i) {
                 var j = Math.floor(i/cols)
@@ -94,9 +92,8 @@ function heatmap(selector, data) {
                 d3.select(this).classed("hoverover",false);
                 d3.select(".ends_Y"+(j+yStart)).classed("hover",false);
                 d3.select(".ends_X"+(i%cols+xStart)).classed("hover",false);
-                                
-                label
-                    .style('display','none')
+
+                info.classed('hover',false)
             });
     
         //Labels of genes
@@ -213,7 +210,7 @@ function heatmap(selector, data) {
         };
     }
 
-//This step doesn't really need to be here either. The color computation for the metadata can be done in R.
+
     function annotScale(selectedDat) { 
         var scaling;
         //Changes the color scale for annotation bar

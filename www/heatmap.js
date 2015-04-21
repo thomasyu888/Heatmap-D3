@@ -384,7 +384,7 @@ function heatmap(selector, data) {
                             //New Horizontal dendrogram
                             var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250,newxDend,oldxStart,x);
                             //New annotation bar, if no annotations, don't do this
-                            if (metaDat[1] !=null) {
+                            if (metaDat[0] !=null) {
                                 drawAnnotate(el.select('svg.annotations'), newAnnot);
                             }
                             zoomDat = [];

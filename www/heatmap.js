@@ -366,7 +366,7 @@ function heatmap(selector, data) {
                             //olsxStart + xStart because the dendrogram is translated
                             heatmapGrid(el.select('svg.colormap'),dataset,oldxStart,oldyStart);                            
                             //New Vertical dendrogram
-                            var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-130,newyDend,oldyStart,y);
+                            var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-margintop,newyDend,oldyStart,y);
                            
                             //New Horizontal dendrogram
                             var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250,newxDend,oldxStart,x);

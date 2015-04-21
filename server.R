@@ -23,7 +23,7 @@ HCtoJSON<-function(hc){
       eval(parse(text=paste0("node", i, "<-list(name=\"node", i, "\", children=list(node",merge[i,1] , ", node" , merge[i,2]," ))")))}
   }
   
-  eval(parse(text=paste0("JSON<-toJSON(node",nrow(merge), ")")))
+  eval(parse(text=paste0("JSON<-(node",nrow(merge), ")")))
   
   return(JSON)
 }
@@ -49,9 +49,7 @@ renderHeatmap <- function(expr, env = parent.frame(1), quoted = FALSE) {
     
     rowDend <- HCtoJSON(rowClust)
     colDend <- HCtoJSON(colClust)
-    rowDend <- fromJSON(rowDend)
-    colDend <- fromJSON(colDend)
-    
+
     domain <- seq.int(ceiling(rng[2]), floor(rng[1]), length.out = 100)
     metadata <- data.frame(metadata,row.names=NULL)
     colors <- heat.colors(100)

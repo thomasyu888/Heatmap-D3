@@ -256,12 +256,10 @@ function heatmap(selector, data) {
             .attr("width",width-marginleft)
             .attr("height",10)
 
-        if (data[1]==null) {
+        if (data[0]==null) {
             alert("No metadata!")
             return function(){};
         }
-
-
         var scaling = annotScale(data);
 
         //Annotation svg

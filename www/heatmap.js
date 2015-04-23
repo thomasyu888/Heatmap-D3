@@ -89,14 +89,12 @@ function heatmap(selector, data) {
                 //the hoverover works for the dendrogram
                 d3.select(".ends_Y"+(j+yStart)).classed("hover",true);
                 d3.select(".ends_X"+(i%cols+xStart)).classed("hover",true);
-
                 output = 'Gene loci: '+ data.rows[j]+'<br>Level of expression: '+d+'<br>ID: '+ data.cols[i%cols]
                         +'<br>State: '+metaDat[i%cols+xStart];
-                               
+                               console.log(metaDat);
                 info.classed("hover",true)
-                    //event.page gives current cursor location
-                    .style('top', (d3.event.pageY-75)+'px')
-                    .style('left', (d3.event.pageX-490)+'px')
+                    .style('top', (parseInt(d3.select(this).attr('y'))+140)+'px')
+                    .style('left', (d3.select(this).attr('x'))+'px')
                     .html(output)
         
             })
@@ -107,34 +105,31 @@ function heatmap(selector, data) {
                 d3.select(this).classed("hoverover",false);
                 d3.select(".ends_Y"+(j+yStart)).classed("hover",false);
                 d3.select(".ends_X"+(i%cols+xStart)).classed("hover",false);
-
                 info.classed('hover',false)
             });
     
-        //Labels of genes
+        //y labels if there aren't too many 
         if (marginleft!=0) {
             var yAxis =svg.selectAll('.yLabel').data(data.rows);
                 yAxis.enter().append('svg:text').classed('Labels',true);
                 yAxis.exit().remove();
                 yAxis
                 .attr('class','yLabel')
-                .classed('nohighlight',true)
                 .attr('x',width-97)
                 .attr('y', function(d,i) {
-                    return yScale(i)+2+(yScale(i+1)-yScale(i))/2;
+                    return yScale(i)+3.5+(yScale(i+1)-yScale(i))/2;
                 })
                 .text(function(d) { return d; })
                 .attr("id", function(d,i) { return "yLab" + i; });
         }
 
-        //Label of patient
+        //x labels if there aren't too many
         if (margintop!=0) {
             var xAxis = svg.selectAll('.xLabel').data(data.cols);
                 xAxis.enter().append('svg:text').classed('Labels',true)
                 xAxis.exit().remove();
                 xAxis
                 .attr('class', 'xLabel')
-                .classed('nohighlight',true)
                 .attr('x', function(d,i) {
                     return xScale(i)+(xScale(i+1)-xScale(i))/2;
                 }) 
@@ -146,7 +141,6 @@ function heatmap(selector, data) {
         //Select rectangle on heatmap and dendrograms
         var selectHeat = selectArea(colmap,el.select('svg.colormap'),data,undefined,xStart,yStart);
         var selectYDend = selectArea(rowDend,el.select('svg.rowDend'),data,1,xStart,yStart);
-        
         var selectXDend = selectArea(colDend,el.select('svg.colDend'),data,2,xStart,yStart);
     }
 
@@ -170,7 +164,6 @@ function heatmap(selector, data) {
             // Rotate
             transform = "rotate(-90," + height/2 + "," + height/2 + ") translate(140, 0)";
         }
-
         //stretch is default 1 because y(d.source) has to remain unchanged when not stretched
         var stretch = 1;
         //If zoom, then dend will not be undefined, Then the data put into draw will be different
@@ -260,8 +253,8 @@ function heatmap(selector, data) {
             alert("No metadata!")
             return function(){};
         }
-        var scaling = annotScale(data);
 
+        var scaling = annotScale(data);
         //Annotation svg
         var annotation = svg.selectAll('.annotate').data(data);
             annotation.enter().append('svg:rect').classed('annotate',true)
@@ -371,7 +364,7 @@ function heatmap(selector, data) {
                             yGlobal.range([0,height-margintop])
                             var x = xGlobal(1);
                             var y = yGlobal(1);
-                            
+
                             //This slows down the program (Remove())
                             d3.selectAll('.rootDend').remove();
                             oldxStart += xStart

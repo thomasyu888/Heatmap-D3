@@ -91,7 +91,6 @@ function heatmap(selector, data) {
                 d3.select(".ends_X"+(i%cols+xStart)).classed("hover",true);
                 output = 'Gene loci: '+ data.rows[j]+'<br>Level of expression: '+d+'<br>ID: '+ data.cols[i%cols]
                         +'<br>State: '+metaDat[i%cols+xStart];
-                               console.log(metaDat);
                 info.classed("hover",true)
                     .style('top', (parseInt(d3.select(this).attr('y'))+140)+'px')
                     .style('left', (d3.select(this).attr('x'))+'px')

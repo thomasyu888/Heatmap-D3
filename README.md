@@ -14,6 +14,7 @@ https://github.com/jcheng5/d3-heatmap
 To use your own data: change two lines of code in server.R:
 
 > genes <- read.csv(files = "______",head=TRUE, row.names =1)
+
 > metadatas <- read.csv(file = "_______",head=TRUE, row.names=1)
 
 

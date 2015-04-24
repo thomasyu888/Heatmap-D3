@@ -24,7 +24,7 @@ HCtoJSON<-function(hc){
   return(JSON)
 }
 
-genes <- read.csv(file="example.csv",head=TRUE,row.names=1)
+genes <- read.csv(file="Example.csv",head=TRUE,row.names=1)
 metadatas <- read.csv(file="metaExample.csv",head=TRUE,row.names=1)
 genes <- as.matrix(genes)
 rng <- range(genes)

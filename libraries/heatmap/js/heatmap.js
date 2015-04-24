@@ -1,5 +1,5 @@
-function heatmap(selector, data) {
-    
+function heatmapdraw(selector,data) {
+
     var mainDat = data.matrix;
     //ALERTS!
     //If there are over 170000 data points, there are too many
@@ -91,8 +91,9 @@ function heatmap(selector, data) {
                 d3.select(".ends_X"+(i%cols+xStart)).classed("hover",true);
                 output = 'Gene loci: '+ data.rows[j]+'<br>Level of expression: '+d+'<br>ID: '+ data.cols[i%cols]
                         +'<br>State: '+metaDat[i%cols+xStart];
+
                 info.classed("hover",true)
-                    .style('top', (parseInt(d3.select(this).attr('y'))+140)+'px')
+                    .style('top', (parseInt(d3.select(this).attr('y'))+170)+'px')
                     .style('left', (d3.select(this).attr('x'))+'px')
                     .html(output)
         
@@ -272,7 +273,7 @@ function heatmap(selector, data) {
     };
 
     /////ZOOM INTO RECTANGLE/////
-    function selectArea(area,svg,dataset,num,oldxStart,oldyStart) {
+    function selectArea(area,svg,dataset,num,oldxStart,oldyStart) { 
         svg
             .attr("width",width)
             .attr("height",height)
@@ -384,5 +385,6 @@ function heatmap(selector, data) {
                             rect.remove();
                     });
             });
-    }
-}
+    };
+};
+

@@ -8,38 +8,44 @@
   position:absolute;
   display:none;
   font-size:10px;
-
 }
-
+.inner {
+  font-family: sans-serif;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 div.hover {
   background:white;
   display:inline-block;
   opacity:0.9;
   white-space:nowrap;
   z-index:5;
-
 }
+
 .annotations {
   position: absolute;
   left: 150px;
   top: 200px;
 }
+
 .rootDend {
     fill: none;
   stroke: #AAA;
     stroke-width: 1px;
   shape-rendering: crispEdges;
 }
-.node {
-  font: 10px sans-serif;
-}
 
 .link {
   fill: none;
   stroke: #AAA;
-    stroke-width: 1px;
+  stroke-width: 1px;
   shape-rendering: crispEdges;
 }
+
 rect.zoom {
   stroke: steelblue;
   fill-opacity: 0.2;
@@ -50,7 +56,6 @@ rect.hoverover {
   stroke: white;
 }
 
-
 text.hover {
   font-weight: bold;
   font-size: 9px;
@@ -60,25 +65,9 @@ text.hover {
   font-size:4px;
   writing-mode: tb;
 }
+
 .yLabel {
   font-size: 4px;
-}
-.d3-heatmap {
-  position: relative;
-  width: 1500px;
-  height: 800px;
-  border: 1px solid #CCC;
-  overflow: hidden;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-.inner {
-  position: relative;
-  top: -70px;
 }
 
 .colDend {
@@ -86,15 +75,18 @@ text.hover {
   top: 0;
   left: 150px;
 }
+
 .rowDend {
   position: absolute;
   left: 0;
   top: 220px;
 }
+
 polyline.hover {
   stroke: black;
   stroke-width:3px;
 }
+
 .colormap {
   position: absolute;
   left: 150px;

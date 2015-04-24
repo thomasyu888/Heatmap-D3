@@ -1,0 +1,9 @@
+heatmap:
+  css: css/heatmap.css
+  jshead: [js/d3.min.js, js/heatmap.js]
+  cdn:
+    css: 
+      - https://github.com/thomasyu888/Shiny-d3-Heatmap/blob/master/www/heatmap.css
+    jshead:
+      - http://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js
+      - https://raw.githubusercontent.com/thomasyu888/Shiny-d3-Heatmap/master/www/heatmap.js

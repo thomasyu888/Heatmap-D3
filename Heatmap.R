@@ -1,14 +1,5 @@
-if (!is.installed(devtools)) {
-  install.packages("devtools")
-  library(devtools)
-}
 library(devtools)
-if (!is.installed(rCharts)) {
-  install_github('rCharts', 'ramnathv')
-  library(rCharts)
-}
 library(rCharts)
-
 
 HCtoJSON<-function(hc){
   

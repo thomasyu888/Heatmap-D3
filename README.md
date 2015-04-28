@@ -7,7 +7,7 @@ Given a feature matrix/annotations, this will display an interactive Heatmap wit
 
 >iHeatmap(mainData, metaData, method = "complete")
 
-
+Look at example.R for reference
 
 **References**
 

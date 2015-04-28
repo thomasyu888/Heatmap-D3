@@ -1,6 +1,14 @@
-require(devtools)
-install_github('rCharts', 'ramnathv')
+if (!is.installed(devtools)) {
+  install.packages("devtools")
+  library(devtools)
+}
+library(devtools)
+if (!is.installed(rCharts)) {
+  install_github('rCharts', 'ramnathv')
+  library(rCharts)
+}
 library(rCharts)
+
 
 HCtoJSON<-function(hc){
   
@@ -24,48 +32,54 @@ HCtoJSON<-function(hc){
   return(JSON)
 }
 
-genes <- read.csv(file="Example.csv",head=TRUE,row.names=1)
-metadatas <- read.csv(file="metaExample.csv",head=TRUE,row.names=1)
-genes <- as.matrix(genes)
-rng <- range(genes)
+formData <- function(mainData, metaData,...) {
+  if (length(row.names(mainData))==0) {
+    row.names(mainData) = c(1:dim(mainData)[1])
+  }
+  if (length(colnames(mainData))== 0) {
+    colnames(mainData) = c(1:dim(mainData)[2])
+  }
+  
+  rowClust <- hclust(dist(mainData),...)
+  mainData <- mainData[rowClust$order,]
+  colClust <- hclust(dist(t(mainData)),...)
+  mainData <- mainData[,colClust$order]
+  
+  rowDend <- HCtoJSON(rowClust)
+  colDend <- HCtoJSON(colClust)
+  
+  rng <- range(mainData)
+  domain <- seq.int(ceiling(rng[2]), floor(rng[1]), length.out = 100)
+  colors <- heat.colors(100)
+  colors <- sub('FF$', '', colors)
+  
+  if (dim(metaData)[1]==dim(mainData)[2]) { 
+    metaData <- metaData[colClust$order,]     
+  } else {
+    metaData = rep(NA,dim(mainData)[2])
+  }
+  
+  metaData <- data.frame(metaData,row.names=NULL)
 
-
-rowClust <- hclust(dist(genes))
-genes <- genes[rowClust$order,]
-colClust <- hclust(dist(t(genes)))
-genes <- genes[,colClust$order]
-
-if (dim(metadatas)[1]==dim(genes)[2]) { 
-  metadata <- as.matrix(metadatas)
-  metadata <- metadata[colClust$order,]     
-} else {
-  metadata = rep(NA,dim(genes)[2])
+  matrix <- list(data = as.numeric(t(mainData)),
+                 dim = dim(mainData),
+                 rows = row.names(mainData),
+                 cols = colnames(mainData),
+                 colors = colors,
+                 domain = domain)
+  
+  dataset <- list(rows = rowDend, cols = colDend, metadata = metaData[,1], matrix = matrix)
+  return(dataset)
 }
 
-rowDend <- HCtoJSON(rowClust)
-colDend <- HCtoJSON(colClust)
-metadata <- data.frame(metadata,row.names=NULL)
-
-domain <- seq.int(ceiling(rng[2]), floor(rng[1]), length.out = 100)
-colors <- heat.colors(100)
-colors <- sub('FF$', '', colors)
-
-matrix <- list(data = as.numeric(t(genes)),
-               dim = dim(genes),
-               rows = row.names(genes),
-               cols = colnames(genes),
-               colors = colors,
-               domain = domain)
-
-dataset <- list(rows = rowDend, cols = colDend, metadata = metadata[,1], matrix = matrix)
 
 #This creates new rcharts and runs the heatmap
-heatmap <- function(dataMatrix) {
+iHeatmap <- function(data, annotations,...) {
+  
+  dataset <- formData(data, annotations,...)
   heat <- rCharts$new()
   heat$setLib("libraries/heatmap")
   heat$set(data = dataset)
   return (heat)
 }
 
-heatmap(dataset) 
-#Where dataset is the row dendrogram/column dendrogram, metadata and heatmapgrid data

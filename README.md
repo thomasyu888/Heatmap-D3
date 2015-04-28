@@ -1,4 +1,4 @@
-# Shiny-d3-Heatmap
+# Interactive heatmap
 Given a feature matrix/annotations, this will display an interactive Heatmap with hover over ability and zoom by selection capability.  With the help of rCharts, this javascript function is able to be used R:  
 
 >Source(....)

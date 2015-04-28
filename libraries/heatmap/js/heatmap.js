@@ -91,7 +91,7 @@ function heatmapdraw(selector,data) {
                 d3.select(".ends_X"+(i%cols+xStart)).classed("hover",true);
                 output = 'Gene loci: '+ data.rows[j]+'<br>Level of expression: '+d+'<br>ID: '+ data.cols[i%cols]
                         +'<br>State: '+metaDat[i%cols+xStart];
-
+                
                 info.classed("hover",true)
                     .style('top', (parseInt(d3.select(this).attr('y'))+170)+'px')
                     .style('left', (d3.select(this).attr('x'))+'px')
@@ -209,8 +209,11 @@ function heatmapdraw(selector,data) {
             var leafNode = node.filter(function(d, i){ return !d.children; })
       
             //All the ends of the leafs (This is for the zoom function)
+            
             var leafLink = link.filter(function(d,i) {
-                if (d.target.name.substring(0,4)!="node") { return d.target; }
+                if (d!=null) {
+                    if (d.target.name.substring(0,4)!="node") { return d.target; }
+                }
             })
             .attr("class",function(d,i) {
                 return "ends_"+(rotated ? "X" : "Y")+(i);

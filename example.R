@@ -1,3 +1,4 @@
+source(heatmap.R)
 m  <- runif(1000)
 m <- matrix(m, ncol=10)
 d <- runif(10)

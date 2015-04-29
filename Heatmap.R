@@ -1,6 +1,6 @@
 library(devtools)
 library(rCharts)
-#sets working directory
+
 this.dir <- dirname(parent.frame(2)$ofile)
 setwd(this.dir)
 
@@ -26,17 +26,27 @@ HCtoJSON<-function(hc){
   return(JSON)
 }
 
-formData <- function(mainData, metaData,...) {
+formData <- function(mainData, colAnnote,rowAnnote,...) {
   if (length(row.names(mainData))==0) {
     row.names(mainData) = c(1:dim(mainData)[1])
   }
   if (length(colnames(mainData))== 0) {
     colnames(mainData) = c(1:dim(mainData)[2])
   }
-  
-  rowClust <- hclust(dist(mainData),...)
+  if(length(row.names(colAnnote))==0) {
+    row.names(colAnnote) = c(1:dim(colAnnote)[1])
+    colnames(colAnnote) = c(1:dim(colAnnote)[2])
+  }
+  if(length(row.names(rowAnnote))==0) {
+    row.names(rowAnnote) = c(1:dim(rowAnnote)[1])
+    colnames(rowAnnote) = c(1:dim(rowAnnote)[2])
+  }
+
+  #rowClust <- hclust(dist(mainData),...)
+  rowClust <- hclust(dist(mainData))
   mainData <- mainData[rowClust$order,]
-  colClust <- hclust(dist(t(mainData)),...)
+  #colClust <- hclust(dist(t(mainData)),...)
+  colClust <- hclust(dist(t(mainData)))
   mainData <- mainData[,colClust$order]
   
   rowDend <- HCtoJSON(rowClust)
@@ -47,14 +57,25 @@ formData <- function(mainData, metaData,...) {
   colors <- heat.colors(100)
   colors <- sub('FF$', '', colors)
   
-  if (dim(metaData)[1]==dim(mainData)[2]) { 
-    metaData <- metaData[colClust$order,]     
+  if (dim(colAnnote)[1]==dim(mainData)[2]) { 
+    colAnnotes <- colAnnote[colClust$order,]  
+    colAnnotes <- matrix(colAnnotes)
   } else {
-    metaData = rep(NA,dim(mainData)[2])
+    colAnnote <- rep(NA,dim(mainData)[2])
   }
-  
-  metaData <- data.frame(metaData,row.names=NULL)
+  if (dim(rowAnnote)[1]==dim(mainData)[1]) { 
+    rowAnnotes <- rowAnnote[rowClust$order,]    
+    rowAnnotes <- matrix(rowAnnotes)
+  } else {
+    rowAnnote <- rep(NA,dim(mainData)[1])
+  }
 
+  colMeta <- list(data = colAnnotes,
+                 header = colnames(colAnnote))
+  
+  rowMeta <- list(data = rowAnnotes,
+                  header = colnames(rowAnnote))
+  
   matrix <- list(data = as.numeric(t(mainData)),
                  dim = dim(mainData),
                  rows = row.names(mainData),
@@ -62,15 +83,13 @@ formData <- function(mainData, metaData,...) {
                  colors = colors,
                  domain = domain)
   
-  dataset <- list(rows = rowDend, cols = colDend, metadata = metaData[,1], matrix = matrix)
+  dataset <- list(rows = rowDend, cols = colDend, colMeta = colMeta,rowMeta = rowMeta, matrix = matrix)
   return(dataset)
 }
 
-
 #This creates new rcharts and runs the heatmap
-iHeatmap <- function(data, annotations,...) {
-  
-  dataset <- formData(data, annotations,...)
+iHeatmap <- function(data, colAnnote,rowAnnote, ...) {
+  dataset <- formData(data, colAnnote,rowAnnote,...)
   heat <- rCharts$new()
   heat$setLib("libraries/heatmap")
   heat$set(data = dataset)

@@ -42,11 +42,9 @@ formData <- function(mainData, colAnnote,rowAnnote,...) {
     colnames(rowAnnote) = c(1:dim(rowAnnote)[2])
   }
 
-  #rowClust <- hclust(dist(mainData),...)
-  rowClust <- hclust(dist(mainData))
+  rowClust <- hclust(dist(mainData),...)
   mainData <- mainData[rowClust$order,]
-  #colClust <- hclust(dist(t(mainData)),...)
-  colClust <- hclust(dist(t(mainData)))
+  colClust <- hclust(dist(t(mainData)),...)
   mainData <- mainData[,colClust$order]
   
   rowDend <- HCtoJSON(rowClust)

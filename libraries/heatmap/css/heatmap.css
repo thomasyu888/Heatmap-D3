@@ -26,12 +26,16 @@ div.hover {
   z-index:5;
 }
 
-.annotations {
+.colAnnote {
   position: absolute;
   left: 150px;
   top: 200px;
 }
-
+.rowAnnote {
+  position: absolute;
+  left:140px;
+  top:220px;
+}
 .rootDend {
     fill: none;
   stroke: #AAA;

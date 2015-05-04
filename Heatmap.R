@@ -26,7 +26,8 @@ HCtoJSON<-function(hc){
   return(JSON)
 }
 
-formData <- function(mainData, colAnnote,rowAnnote,...) {
+formData <- function(mainData, colAnnote,rowAnnote,Rowv,Colv,distM,...) {
+  #NEED ROWNAMES/COLNAMES
   if (length(row.names(mainData))==0) {
     row.names(mainData) = c(1:dim(mainData)[1])
   }
@@ -41,32 +42,42 @@ formData <- function(mainData, colAnnote,rowAnnote,...) {
     row.names(rowAnnote) = c(1:dim(rowAnnote)[1])
     colnames(rowAnnote) = c(1:dim(rowAnnote)[2])
   }
+  
+  if (Rowv) {
+    rowClust <- hclust(dist(mainData,method = distM),...)
+    mainData <- mainData[rowClust$order,]
+    rowDend <- HCtoJSON(rowClust)
+    if (dim(rowAnnote)[1]==dim(mainData)[1]) { 
+      rowAnnotes <- rowAnnote[rowClust$order,]    
+      rowAnnotes <- matrix(rowAnnotes)
+    } else {
+      rowAnnotes <- NULL
+    }
+  } else {
+    rowDend = NULL
+    rowAnnotes <- matrix(rowAnnote)
+  }
 
-  rowClust <- hclust(dist(mainData),...)
-  mainData <- mainData[rowClust$order,]
-  colClust <- hclust(dist(t(mainData)),...)
-  mainData <- mainData[,colClust$order]
-  
-  rowDend <- HCtoJSON(rowClust)
-  colDend <- HCtoJSON(colClust)
-  
+  if (Colv) {
+    colClust <- hclust(dist(t(mainData),method = distM),...)
+    mainData <- mainData[,colClust$order]
+    colDend <- HCtoJSON(colClust)
+    if (dim(colAnnote)[1]==dim(mainData)[2]) { 
+      colAnnotes <- colAnnote[colClust$order,]  
+      colAnnotes <- matrix(colAnnotes)
+    } else {
+      colAnnotes <- NULL
+    }
+  } else {
+    colDend = NULL
+    colAnnotes <- matrix(colAnnote)
+  }
+
   rng <- range(mainData)
   domain <- seq.int(ceiling(rng[2]), floor(rng[1]), length.out = 100)
   colors <- heat.colors(100)
   colors <- sub('FF$', '', colors)
   
-  if (dim(colAnnote)[1]==dim(mainData)[2]) { 
-    colAnnotes <- colAnnote[colClust$order,]  
-    colAnnotes <- matrix(colAnnotes)
-  } else {
-    colAnnote <- rep(NA,dim(mainData)[2])
-  }
-  if (dim(rowAnnote)[1]==dim(mainData)[1]) { 
-    rowAnnotes <- rowAnnote[rowClust$order,]    
-    rowAnnotes <- matrix(rowAnnotes)
-  } else {
-    rowAnnote <- rep(NA,dim(mainData)[1])
-  }
 
   colMeta <- list(data = colAnnotes,
                  header = colnames(colAnnote))

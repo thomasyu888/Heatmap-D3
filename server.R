@@ -1,30 +1,18 @@
 require(rCharts)
-shinyUI(pageWithSidebar(
-  headerPanel("Interactive Heatmap"),
-  
-  sidebarPanel(
-    selectInput(inputId = "x",
-                label = "Clustering method",
-                choices = c('complete', 'average','ward.D','ward.D2','single','mcquitty','median','centroid'),
-                selected = "complete"),
-    
-    selectInput(inputId = "y",
-                label = "Cluster rows",
-                choices = c('TRUE', 'FALSE'),
-                selected = 'TRUE'),
+require(shiny)
 
-    selectInput(inputId = "z",
-                label = "Cluster columns",
-                choices = c('TRUE','FALSE'),
-                selected = 'TRUE'),
-    
-    selectInput(inputId = "v",
-                label = "Distance method",
-                choices = c('euclidean','maximum','manhattan','canberra','binary','minkowski'),
-                selected = 'euclidean')
-  ),
 
-  mainPanel(
-    showOutput("myChart","libraries/heatmap")
-  )
-))
+m <- read.csv("PCBC_geneExpr_data.csv",row.names = 1, header = TRUE)
+d <- read.csv("metadata.csv",row.names=1, header=TRUE)
+m <-as.matrix(m)
+d <- as.matrix(d)
+f <- runif(69)
+f <- matrix(f,69,1)
+
+shinyServer(function(input, output) {
+  output$myChart <- renderChart2({
+    source("Heatmap.R")
+    p1 <- iHeatmap(m,d,f,input$x,Rowv=input$y,Colv=input$z,distM = input$v)
+    return(p1)
+  })
+})

@@ -1,7 +1,7 @@
 # Interactive heatmap
 Given a feature matrix/annotations, this will display an interactive Heatmap with hover over ability and zoom by selection capability.  With the help of rCharts, and Shiny, this javascript function is able to be used R:  
 
-> Change m (main data), d (column annotations), f(row annotations) in server.R. Run App!
+> Change m (main data), d (column annotations), f (row annotations) in server.R. Run App!
 
 Look at example.R for reference
 

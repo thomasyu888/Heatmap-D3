@@ -8,7 +8,7 @@ function heatmapdraw(selector,data) {
         return function(){};
     }
 
-    var el = d3.select(selector);
+    var el = d3.select(myChart);
   //(function() {
     var inner = el.append("div").classed("inner", true);
     //info is hover over, colDend is xDend, rowDend is yDend, colmap is heatmap
@@ -18,6 +18,7 @@ function heatmapdraw(selector,data) {
     var colmap = inner.append("svg").classed("colormap", true);
     var colAnnote = inner.append("svg").classed("colAnnote",true);
     var rowAnnote = inner.append("svg").classed("rowAnnote",true);
+    var legends = inner.append("svg").classed("legends",true)
   //})();
 
     //Global annotations variables
@@ -49,11 +50,12 @@ function heatmapdraw(selector,data) {
     //This is needed for the dendrogram zooming (Hack for now)
     var xGlobal = d3.scale.linear().domain([0,mainDat.dim[1]])
     var yGlobal = d3.scale.linear().domain([0,mainDat.dim[0]])
-    
+
+
     //Heatmap colors
     var color = d3.scale.linear()
-        .domain(mainDat.domain)
-        .range(mainDat.colors);
+    	.domain(mainDat.domain)
+       	.range(mainDat.colors);
 
     //Creates everything for the heatmap
     var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-margintop);
@@ -62,6 +64,7 @@ function heatmapdraw(selector,data) {
     var colAnnots = drawAnnotate(el.select('svg.colAnnote'),colAnnote, false, width-marginleft,colHead.length*5);
     var rowAnnots = drawAnnotate(el.select('svg.rowAnnote'),rowAnnote, true,rowHead.length*5,height-margintop);
 
+    gradLegend(color,5,40)
 
     function heatmapGrid(svg, data, xStart,yStart) {
         // Check for no data
@@ -101,7 +104,7 @@ function heatmapdraw(selector,data) {
                 d3.select(".ends_Y"+(j+yStart)).classed("hover",true);
                 d3.select(".ends_X"+(i%cols+xStart)).classed("hover",true);
                 output = 'Gene loci: '+ data.rows[j]+'<br>Level of expression: '+d+'<br>ID: '+ data.cols[i%cols] +'<br>Annotations:'
-
+                //Get all the metadata
                 for (k=0; k<colHead.length;k++) {
                     output += '<br>- ' + colHead[k] + ': ' + colMeta[(i%cols)+(k*cols)]
                 }
@@ -110,8 +113,8 @@ function heatmapdraw(selector,data) {
                 }
                 
                 info.classed("hover",true)
-                    .style('top', d3.event.pageY-50+'px')
-                    .style('left', d3.event.pageX-150+'px')
+                    .style('top', d3.event.pageY-175+'px')
+                    .style('left', d3.event.pageX-660+'px')
                     .html(output)
         
             })
@@ -139,7 +142,6 @@ function heatmapdraw(selector,data) {
                 .text(function(d) { return d; })
                 .attr("id", function(d,i) { return "yLab" + i; });
         }
-
         //x labels if there aren't too many
         if (margintop!=0) {
             var xAxis = svg.selectAll('.xLabel').data(data.cols);
@@ -159,9 +161,13 @@ function heatmapdraw(selector,data) {
         var selectHeat = selectArea(colmap,el.select('svg.colormap'),data,undefined,xStart,yStart);
         var selectYDend = selectArea(rowDend,el.select('svg.rowDend'),data,1,xStart,yStart);
         var selectXDend = selectArea(colDend,el.select('svg.colDend'),data,2,xStart,yStart);
+        
     }
 
     function dendrogram(svg, data, rotated, width, height,dend,shift,range) {
+    	if (data==null) {
+    		return function(){};
+    	}
         var x = d3.scale.linear();
         var y = d3.scale.linear()
             .domain([0, height])
@@ -244,12 +250,62 @@ function heatmapdraw(selector,data) {
             leaves: leaves[0]
         };
     }
+//////////////////////////////////////////////////////////////////////////////////////
 
+    //Legend for the annotations for categorical annotations!
+    function catLegend(scales) {
+    	var legsvg = el.select('svg.legends').attr('width',1000).attr('height', 80)
+       	var leg = legsvg.selectAll('.legend')
+            .data(scales.domain())
+            .enter()
+            .append('g')
+            .attr("class","legend")
+            .attr('transform', function(d,i) {
+                return 'translate(' + i*30+',0)';
+            });
+        leg.append('rect')
+            .attr('width',5)
+            .attr('height',5)
+            .style('fill',scales)
+            .style('stroke',scales)
 
-    function annotScale(selectedDat) { 
-        var scaling;
-        scaling = d3.scale.category10()
-            .domain(selectedDat)
+        leg.append('text')
+            .attr('x',5)
+            .attr('y',10)
+            .text(function(d) {return d});
+       }
+
+    //Legend for quantized values
+    function gradLegend(color,width, location) {
+    	var legsvg = el.select('svg.legends')
+    	var leg = legsvg.append("g")
+    		.attr("class", "key")
+    		.attr("transform", "translate(0," + location +")");
+
+		leg.selectAll("rect")
+		    .data(color.range().map(function(d, i) {
+			    return {
+			        x0: i ? xScale(color.domain()[i - 1]) : xScale.range()[0],
+			        x1: i < color.domain().length ? xScale(color.domain()[i]) : xScale.range()[1],
+			        z: d
+			    };
+		    }))
+		  	.enter().append("rect")
+		    .attr("height", 12)
+		    .attr("x", function(d,i) { return width*i; })
+		    .attr("width", width)
+		    .style("fill", function(d) { return d.z; });
+
+    }
+
+    //Linear scaling for continuous values
+    function linScale(selectedDat) { 
+        var max = Math.max.apply(Math,selectedDat);
+        var min = Math.min.apply(Math,selectedDat);
+
+        var scaling = d3.scale.linear()
+            .domain([min, max])
+            .range(['powderblue', 'darkblue']);
 
         return scaling;
     }
@@ -258,13 +314,21 @@ function heatmapdraw(selector,data) {
         svg
             .attr("width",width)
             .attr("height",height)
-
-        if (datum.data[0]==null) {
+        //If no metadata, alert( no metadata)
+        if (datum==null) {
             alert("No metadata!")
             return function(){};
         }
-        var scaling = annotScale(datum.data);
 
+        var scaling = d3.scale.category10()
+        var cols = datum.data.length/datum.header.length
+
+        for (k=0;k<datum.header.length;k++) {
+        	//If the data is not cateogorical value, get all the values to get a linear scale
+        	if (!isNaN(datum.data[k*cols])) {
+        		var lin = linScale(datum.data.slice(k*cols, (1+k)*cols-1));
+        	}
+        }
         //Annotation svg
         var annotation = svg.selectAll('.annotate').data(datum.data);
             annotation.enter().append('svg:rect').classed("annotate",true)
@@ -273,15 +337,21 @@ function heatmapdraw(selector,data) {
             .attr('width' , function(d) { return (rotated ? 4 :xScale(1)); })
             .attr('height', function(d) { return (rotated ? yScale(1) : 4)})
             .attr('x' , function(d,i) {
-                return (rotated ? 5*Math.floor(i/(datum.data.length/datum.header.length)): xScale(i%(datum.data.length/datum.header.length)));
+                //This is to account for 2 or more sets of annotation data
+                return (rotated ? 5*Math.floor(i/cols): xScale(i%cols));
             })
             .attr('y', function(d,i) {
-                return (rotated? yScale(i%(datum.data.length/datum.header.length)):5*Math.floor(i/(datum.data.length/datum.header.length)));
+                return (rotated? yScale(i%cols):5*Math.floor(i/cols));
             })
             .style('fill',function(d,i) {
-                return scaling(d);
-            }) 
+                return (isNaN(d) ? scaling(d):lin(d));
+            });
+
+        gradLegend(lin,20,20)
+		catLegend(scaling)   
     };
+
+//////////////////////////////////////////////////////////////////////////////////////
 
     /////ZOOM INTO RECTANGLE/////
     function selectArea(area,svg,dataset,num,oldxStart,oldyStart) { 
@@ -332,7 +402,6 @@ function heatmapdraw(selector,data) {
                             var newyDend = [];
                             var newxDend = [];
 
-
                             //If the Y dendrogram is selected, make the X dendrogram undefined 
                             //because I dont want the x dendrogram to change
                             if (num==1) {
@@ -348,16 +417,21 @@ function heatmapdraw(selector,data) {
                             //Get the data selected and send it back to heatmapgrid
                             for (i = xStart; i<xFinish; i++) {
                                 newxLab.push(dataset.cols[i]);
-                                newxDend.push(d3.select(".ends_X"+i).attr("id"))
+	                            if (data.cols!=null) { //If there is no column clustering
+	                                newxDend.push(d3.select(".ends_X"+i).attr("id"))
+	                            }
                             }
 
                             for (i=yStart;i<yFinish; i++) {
                                 newyLab.push(dataset.rows[i]);
-                                newyDend.push(d3.select(".ends_Y"+i).attr("id"))
+                                if (data.rows !=null) { //If there is no row clustering
+                                	newyDend.push(d3.select(".ends_Y"+i).attr("id"))
+                                }
                                 for (j=xStart; j<xFinish; j++) {
                                     zoomDat.push(dataset.data[i*cols+j]);
                                 }
                             }
+
                             //Get the Metadata -> If there is more than one line of annotations, the data is in different places, just like the grid
                             for (i = 0; i<colHead.length; i++) {
                                 for (j = xStart; j<xFinish; j++) {
@@ -403,19 +477,21 @@ function heatmapdraw(selector,data) {
                             //New Horizontal dendrogram
                             dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250,newxDend,oldxStart,x);
                             //New annotation bar, if no annotations, don't do this
-                            if (colMeta[0] !=null) {
+                            //if (colMeta[0] !=null) {
                                 drawAnnotate(el.select('svg.colAnnote'), colAnnote,false, width-marginleft,10);
                                 colMeta = newcolMeta
-                            }
-                            if (rowMeta[0] != null) {
+                            //}
+                            //if (rowMeta[0] != null) {
                                 drawAnnotate(el.select('svg.rowAnnote'),rowAnnote,true,10,height-margintop);
                                 rowMeta = newrowMeta
-                            }
+                            //}
                             zoomDat = [];
                             //remove blue select rectangle
                             rect.remove();
                     });
             });
     };
+
+	
 };
 

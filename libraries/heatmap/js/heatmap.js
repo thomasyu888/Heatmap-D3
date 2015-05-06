@@ -277,11 +277,8 @@ function heatmapdraw(selector,data) {
 
     //Legend for quantized values
     function gradLegend(color,width, location) {
-<<<<<<< HEAD
     	var legsvg = el.select('svg.legends').attr('width',1000).attr('height', 80)
-=======
     	var legsvg = el.select('svg.legends')
->>>>>>> a09130413e3cde4fefbb24ec3b15111599fdc384
     	var leg = legsvg.append("g")
     		.attr("class", "key")
     		.attr("transform", "translate(0," + location +")");

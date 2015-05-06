@@ -3,7 +3,6 @@ Given a feature matrix/annotations, this will display an interactive Heatmap wit
 
 > Change m (main data), d (column annotations), f (row annotations) in server.R. Run App!
 
-Look at example.R for reference
 
 **References**
 

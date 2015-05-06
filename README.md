@@ -1,15 +1,3 @@
-# Shiny-d3-Heatmap
-Given a feature matrix/annotations, this will display an interactive Heatmap with hover over ability and zoom by selection capability.  With the help of rCharts, this javascript function is able to be used R:  
-
->heatmap(dataset)
-
-To use your own data: change two lines of code in heatmap.R:
-
-> genes <- read.csv(file = "______",head=TRUE, row.names =1)
-
-> metadatas <- read.csv(file = "_______",head=TRUE, row.names=1)
-
-
 # Interactive heatmap
 Given a feature matrix/annotations, this will display an interactive Heatmap with hover over ability and zoom by selection capability.  With the help of rCharts, and Shiny, this javascript function is able to be used R:  
 

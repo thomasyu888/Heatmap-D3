@@ -1,0 +1,105 @@
+.node circle {
+  fill: #fff;
+    stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.info {
+  position:absolute;
+  display:none;
+  font-size:10px;
+}
+.inner {
+  font-family: sans-serif;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+div.hover {
+  background:white;
+  display:inline-block;
+  opacity:0.9;
+  white-space:nowrap;
+  z-index:5;
+}
+
+.colAnnote {
+  position: absolute;
+  left: 150px;
+  top: 200px;
+}
+.rowAnnote {
+  position: absolute;
+  left:140px;
+  top:220px;
+}
+.rootDend {
+    fill: none;
+  stroke: #AAA;
+    stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+
+.link {
+  fill: none;
+  stroke: #AAA;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+
+rect.zoom {
+  stroke: steelblue;
+  fill-opacity: 0.2;
+}
+
+rect.hoverover {
+  stroke-width:1px;
+  stroke: white;
+}
+
+text.hover {
+  font-weight: bold;
+  font-size: 9px;
+}
+
+.xLabel {
+  font-size:4px;
+  writing-mode: tb;
+}
+
+.yLabel {
+  font-size: 4px;
+}
+
+.colDend {
+  position: absolute;
+  top: 0;
+  left: 150px;
+}
+
+.rowDend {
+  position: absolute;
+  left: 0;
+  top: 220px;
+}
+
+polyline.hover {
+  stroke: black;
+  stroke-width:3px;
+}
+
+.colormap {
+  position: absolute;
+  left: 150px;
+  top: 220px;
+  shape-rendering: crispEdges;
+}
+.legends {
+  position: absolute;
+  top:20px;
+  left:100px;
+  font-size:12px;
+}

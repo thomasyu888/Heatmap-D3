@@ -97,9 +97,13 @@ polyline.hover {
   top: 220px;
   shape-rendering: crispEdges;
 }
+<<<<<<< HEAD
 .legends {
   position: absolute;
   top:20px;
   left:100px;
   font-size:12px;
 }
+=======
+
+>>>>>>> a09130413e3cde4fefbb24ec3b15111599fdc384

@@ -107,7 +107,8 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
 #########FIX THIS!!!
 
   ##Dealing with outliers.. Simple boxplot$out
-  rng <- range(mainData[mainData<min(boxplot(mainData)$out)])
+  ##rng <- range(mainData[abs(mainData)<min(abs(boxplot(mainData)$out))])
+  rng <- range(mainData)
   domain <- seq.int(ceiling(rng[2]), floor(rng[1]), length.out = 100)
   colors <- heat.colors(100)
   colors <- sub('FF$', '', colors)

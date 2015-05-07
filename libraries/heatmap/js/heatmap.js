@@ -271,7 +271,7 @@ function heatmapdraw(selector,data) {
         leg.append('text')
             .attr('x',5)
             .attr('y',10)
-            .text(function(d) {return d});
+            .text(function(d) { return d});
        }
 
     //Legend for quantized values
@@ -283,18 +283,22 @@ function heatmapdraw(selector,data) {
 
 		leg.selectAll("rect")
 		    .data(color.range().map(function(d, i) {
-			    return {
-			        x0: i ? xScale(color.domain()[i - 1]) : xScale.range()[0],
-			        x1: i < color.domain().length ? xScale(color.domain()[i]) : xScale.range()[1],
-			        z: d
-			    };
+			    return { z: d };
 		    }))
 		  	.enter().append("rect")
 		    .attr("height", 12)
 		    .attr("x", function(d,i) { return width*i; })
 		    .attr("width", width)
-		    .style("fill", function(d) { return d.z; });
+		    .style("fill", function(d) { return d.z; })
 
+        leg.selectAll('text').data(color.domain().map(function(d,i) {
+            return  {y:d};
+        }))
+        .enter().append('text')
+            .attr('x',function(d,i) { return width*i})
+            .attr('y',5)
+            .text(function(d) { return d.y})
+            .style('writing-mode','tb');
     }
 
     //Linear scaling for continuous values
@@ -313,13 +317,12 @@ function heatmapdraw(selector,data) {
 
         svg.attr("width",width).attr("height",height)
         //If no metadata, return the function
-        if (rowMeta==null) {
+        if (datum.data==null) {
             return function(){};
         }
 
         var scaling = d3.scale.category10()
         var cols = datum.data.length/datum.header.length
-
         for (k=0;k<datum.header.length;k++) {
         	//If the data is not cateogorical value, get all the values to get a linear scale
         	if (!isNaN(datum.data[k*cols])) {

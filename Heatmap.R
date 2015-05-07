@@ -41,10 +41,14 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
   if (length(colnames(mainData))== 0) {
     colnames(mainData) = c(1:dim(mainData)[2])
   }
+#########FIX THIS!!!
+#########FIX THIS!!!
+#########FIX THIS!!!
 
   if (Rowv) {
     rowClust <- hclust(dist(mainData,method = distM),method=ClustM)
     mainData <- mainData[rowClust$order,]
+    rowAnnotes <- rowAnnote[rowClust$order,]    
     rowDend <- HCtoJSON(rowClust)
   } else {
     rowDend = NULL
@@ -53,18 +57,18 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
   if (Colv) {
     colClust <- hclust(dist(t(mainData),method = distM),method=ClustM)
     mainData <- mainData[,colClust$order]
+    colAnnotes <- colAnnote[colClust$order,]  
     colDend <- HCtoJSON(colClust)
   } else {
     colDend = NULL
   }
 
-  if (rowAnnote!="NULL") {
+  if (!is.null(rowAnnote)) {
     if (length(row.names(rowAnnote))==0) {
       row.names(rowAnnote) = c(1:dim(rowAnnote)[1])
       colnames(rowAnnote) = c(1:dim(rowAnnote)[2])
     }
     if (length(rowAnnote[,1])==dim(mainData)[1]) { 
-      rowAnnotes <- rowAnnote[rowClust$order,]    
       rowAnnotes <- matrix(rowAnnotes)
       rowHead <- colnames(rowAnnote)
     } else {
@@ -76,14 +80,12 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
     rowHead <- NULL
   }
 
-  
-  if (colAnnote !="NULL") {
+  if (!is.null(colAnnote)) {
     if(length(row.names(colAnnote))==0) {
       row.names(colAnnote) = c(1:dim(colAnnote)[1])
       colnames(colAnnote) = c(1:dim(colAnnote)[2])
     }
     if (length(colAnnote[,1])==dim(mainData)[2]) { 
-      colAnnotes <- colAnnote[colClust$order,]  
       colAnnotes <- matrix(colAnnotes)
       colHead <- colnames(colAnnote)
     } else {
@@ -94,7 +96,9 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
     colAnnotes <- colAnnote
     colHead <- NULL
   }
-  
+#########FIX THIS!!!
+#########FIX THIS!!!
+
   rng <- range(mainData)
   domain <- seq.int(ceiling(rng[2]), floor(rng[1]), length.out = 100)
   colors <- heat.colors(100)
@@ -116,7 +120,7 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
 }
 
 #This creates new rcharts and runs the heatmap
-iHeatmap <- function(data, colAnnote="NULL",rowAnnote="NULL", ...) {
+iHeatmap <- function(data, colAnnote=NULL,rowAnnote=NULL, ...) {
   dataset <- formData(data, colAnnote,rowAnnote,...)
   heat <- rCharts$new()
   heat$setLib("libraries/heatmap")

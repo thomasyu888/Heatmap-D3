@@ -28,7 +28,11 @@ function heatmapdraw(selector,data) {
     var rowMeta = rowAnnote.data;
     var colHead = colAnnote.header;
     var rowHead = rowAnnote.header;
-
+    
+    if (colMeta == null || rowMeta == null) {
+      alert("One or both annotations missing, or metadata dimensions don't match main data dimensions.")
+    }
+    
     //Width/height of svg
     var width = 1300;
     var height = 600;
@@ -54,14 +58,15 @@ function heatmapdraw(selector,data) {
     //Heatmap colors
     var color = d3.scale.linear()
     	.domain(mainDat.domain)
-       	.range(mainDat.colors);
+      .range(mainDat.colors);
+        
 
     //Creates everything for the heatmap
     var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-margintop);
     var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250);
     var heatmap = heatmapGrid(el.select('svg.colormap'), mainDat,0,0);
-    var colAnnots = drawAnnotate(el.select('svg.colAnnote'),colAnnote, false, width-marginleft,colHead.length*5);
-    var rowAnnots = drawAnnotate(el.select('svg.rowAnnote'),rowAnnote, true,rowHead.length*5,height-margintop);
+    var colAnnots = drawAnnotate(el.select('svg.colAnnote'),colAnnote, false, width-marginleft,(colHead==null ? 0:colHead.length*5));
+    var rowAnnots = drawAnnotate(el.select('svg.rowAnnote'),rowAnnote, true,(rowHead==null ? 0:rowHead.length*5),height-margintop);
 
     gradLegend(color,5,40)
 
@@ -104,13 +109,16 @@ function heatmapdraw(selector,data) {
                 d3.select(".ends_X"+(i%cols+xStart)).classed("hover",true);
                 output = 'Gene loci: '+ data.rows[j]+'<br>Level of expression: '+d+'<br>ID: '+ data.cols[i%cols] +'<br>Annotations:'
                 //Get all the metadata
-                for (k=0; k<colHead.length;k++) {
-                    output += '<br>- ' + colHead[k] + ': ' + colMeta[(i%cols)+(k*cols)]
+                if (colMeta != null) {
+                    for (k=0; k<colHead.length;k++) {
+                        output += '<br>- ' + colHead[k] + ': ' + colMeta[(i%cols)+(k*cols)]
+                    }
                 }
-                for (k=0; k<rowHead.length; k++) {
-                    output += '<br>- '+rowHead[k] + ': ' + rowMeta[j+(k*rows)]
+                if (rowMeta != null) {
+                    for (k=0; k<rowHead.length; k++) {
+                        output += '<br>- '+rowHead[k] + ': ' + rowMeta[j+(k*rows)]
+                    }
                 }
-                
                 info.classed("hover",true)
                     .style('top', d3.event.pageY-175+'px')
                     .style('left', d3.event.pageX-660+'px')
@@ -314,9 +322,8 @@ function heatmapdraw(selector,data) {
         svg
             .attr("width",width)
             .attr("height",height)
-        //If no metadata, alert( no metadata)
-        if (datum==null) {
-            alert("No metadata!")
+        //If no metadata, return the function
+        if (rowMeta==null) {
             return function(){};
         }
 
@@ -348,7 +355,7 @@ function heatmapdraw(selector,data) {
             });
 
         gradLegend(lin,20,20)
-		catLegend(scaling)   
+		    catLegend(scaling)   
     };
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -433,15 +440,23 @@ function heatmapdraw(selector,data) {
                             }
 
                             //Get the Metadata -> If there is more than one line of annotations, the data is in different places, just like the grid
-                            for (i = 0; i<colHead.length; i++) {
-                                for (j = xStart; j<xFinish; j++) {
-                                    newcolMeta.push(colMeta[i*cols+j])
+                            if (colMeta !=null) {
+                                for (i = 0; i<colHead.length; i++) {
+                                    for (j = xStart; j<xFinish; j++) {
+                                        newcolMeta.push(colMeta[i*cols+j])
+                                    }
                                 }
+                            } else {
+                              newcolMeta = null
                             }
-                            for (i =0; i<rowHead.length; i++) {
-                                for (j =yStart; j<yFinish; j++) {
-                                    newrowMeta.push(rowMeta[i*rows+j])
+                            if (rowMeta != null) {
+                                for (i =0; i<rowHead.length; i++) {
+                                    for (j =yStart; j<yFinish; j++) {
+                                        newrowMeta.push(rowMeta[i*rows+j])
+                                    }
                                 }
+                            } else {
+                              newrowMeta = null
                             }
 /////////////////////////////////////
                             //Set new parameters based on selected data
@@ -477,21 +492,16 @@ function heatmapdraw(selector,data) {
                             //New Horizontal dendrogram
                             dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250,newxDend,oldxStart,x);
                             //New annotation bar, if no annotations, don't do this
-                            //if (colMeta[0] !=null) {
-                                drawAnnotate(el.select('svg.colAnnote'), colAnnote,false, width-marginleft,10);
-                                colMeta = newcolMeta
-                            //}
-                            //if (rowMeta[0] != null) {
-                                drawAnnotate(el.select('svg.rowAnnote'),rowAnnote,true,10,height-margintop);
-                                rowMeta = newrowMeta
-                            //}
+                            drawAnnotate(el.select('svg.colAnnote'), colAnnote,false, width-marginleft,10);
+                            colMeta = newcolMeta
+                            
+                            drawAnnotate(el.select('svg.rowAnnote'),rowAnnote,true,10,height-margintop);
+                            rowMeta = newrowMeta
                             zoomDat = [];
                             //remove blue select rectangle
                             rect.remove();
                     });
             });
     };
-
-	
 };
 

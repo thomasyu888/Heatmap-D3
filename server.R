@@ -11,7 +11,7 @@ f <- matrix(f,100,1)
 shinyServer(function(input, output) {
   output$myChart <- renderChart2({
     source("Heatmap.R")
-    p1 <- iHeatmap(m,d,f,input$x,Rowv=input$y,Colv=input$z,distM = input$v)
+    p1 <- iHeatmap(m,d,f,Rowv=input$y,Colv=input$z,distM = input$v,ClustM = input$x)
     return(p1)
   })
 })

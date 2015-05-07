@@ -28,14 +28,11 @@ HCtoJSON<-function(hc){
 
 formData <- function(mainData,colAnnote,rowAnnote,...) {
   #NEED ROWNAMES/COLNAMES
-  
   dots<- list(...)
-  print(dots)
   distM <- dots$distM
   Colv <- dots$Colv
   Rowv<- dots$Rowv
   ClustM <- dots$ClustM
-  
   
   ## sees if rownames/ col names exist for entered matrix
   if (length(row.names(mainData))==0) {
@@ -44,6 +41,7 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
   if (length(colnames(mainData))== 0) {
     colnames(mainData) = c(1:dim(mainData)[2])
   }
+  
 #########FIX THIS!!!
 #########FIX THIS!!!
 #########FIX THIS!!!
@@ -107,6 +105,7 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
   }
 #########FIX THIS!!!
 #########FIX THIS!!!
+
   ##Dealing with outliers.. Simple boxplot$out
   rng <- range(mainData[mainData<min(boxplot(mainData)$out)])
   domain <- seq.int(ceiling(rng[2]), floor(rng[1]), length.out = 100)

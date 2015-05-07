@@ -51,6 +51,9 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
   if (Rowv) {
     rowClust <- hclust(dist(mainData,distM),ClustM)
     mainData <- mainData[rowClust$order,]
+    if (!is.null(rowAnnote)) {
+      rowAnnotes <- rowAnnote[rowClust$order,] 
+    }
     rowDend <- HCtoJSON(rowClust)
   } else {
     rowDend = NULL
@@ -60,6 +63,9 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
   if (Colv) {
     colClust <- hclust(dist(t(mainData),distM),ClustM)
     mainData <- mainData[,colClust$order]
+    if (!is.null(colAnnote)) {
+      colAnnotes <- colAnnote[colClust$order,]  
+    }
     colDend <- HCtoJSON(colClust)
   } else {
     colDend = NULL
@@ -72,7 +78,6 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
       colnames(rowAnnote) = c(1:dim(rowAnnote)[2])
     }
     if (length(rowAnnote[,1])==dim(mainData)[1]) { 
-      rowAnnotes <- rowAnnote[rowClust$order,] 
       rowAnnotes <- matrix(rowAnnotes)
       rowHead <- colnames(rowAnnote)
     } else {
@@ -90,7 +95,6 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
       colnames(colAnnote) = c(1:dim(colAnnote)[2])
     }
     if (length(colAnnote[,1])==dim(mainData)[2]) { 
-      colAnnotes <- colAnnote[colClust$order,]  
       colAnnotes <- matrix(colAnnotes)
       colHead <- colnames(colAnnote)
     } else {
@@ -103,8 +107,8 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
   }
 #########FIX THIS!!!
 #########FIX THIS!!!
-
-  rng <- range(mainData)
+  ##Dealing with outliers.. Simple boxplot$out
+  rng <- range(mainData[mainData<min(boxplot(mainData)$out)])
   domain <- seq.int(ceiling(rng[2]), floor(rng[1]), length.out = 100)
   colors <- heat.colors(100)
   colors <- sub('FF$', '', colors)

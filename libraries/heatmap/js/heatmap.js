@@ -22,12 +22,12 @@ function heatmapdraw(selector,data) {
   //})();
 
     //Global annotations variables
-    var colAnnote = data.colMeta;
-    var rowAnnote = data.rowMeta;
-    var colMeta = colAnnote.data;
-    var rowMeta = rowAnnote.data;
-    var colHead = colAnnote.header;
-    var rowHead = rowAnnote.header;
+    var colAnnote = data.colMeta,
+        rowAnnote = data.rowMeta,
+        colMeta = colAnnote.data,
+        rowMeta = rowAnnote.data,
+        colHead = colAnnote.header,
+        rowHead = rowAnnote.header;
     
     if (colMeta == null || rowMeta == null) {
       alert("One or both annotations missing, or metadata dimensions don't match main data dimensions.")
@@ -58,7 +58,7 @@ function heatmapdraw(selector,data) {
     //Heatmap colors
     var color = d3.scale.linear()
     	.domain(mainDat.domain)
-      .range(mainDat.colors);
+        .range(mainDat.colors);
         
 
     //Creates everything for the heatmap
@@ -75,7 +75,6 @@ function heatmapdraw(selector,data) {
         if (data.length === 0) {
             return function(){};
         }
-
         var cols = data.dim[1]; //x
         var rows = data.dim[0]; //y
         var main = data.data;
@@ -218,7 +217,6 @@ function heatmapdraw(selector,data) {
                     x(d.source.y) + "," + stretch*y(d.target.x) + " " +
                     x(d.target.y) + "," + stretch*y(d.target.x);
             }
-
             var link = svg.selectAll(".link")
                 .data(links)
                 .attr("points", elbow)
@@ -237,18 +235,13 @@ function heatmapdraw(selector,data) {
 
             //All the ending nodes
             var leafNode = node.filter(function(d, i){ return !d.children; })
-      
             //All the ends of the leafs (This is for the zoom function)
-            
             var leafLink = link.filter(function(d,i) {
-                if (d!=null) {
-                    if (d.target.name.substring(0,4)!="node") { return d.target; }
-                }
+                if (d.target.name.substring(0,4)!="node") { return d.target; }
             })
             .attr("class",function(d,i) {
                 return "ends_"+(rotated ? "X" : "Y")+(i);
             })
-
             return leafNode;
         }
         var leaves = draw();
@@ -285,7 +278,6 @@ function heatmapdraw(selector,data) {
     //Legend for quantized values
     function gradLegend(color,width, location) {
     	var legsvg = el.select('svg.legends').attr('width',1000).attr('height', 80)
-    	var legsvg = el.select('svg.legends')
     	var leg = legsvg.append("g")
     		.attr("class", "key")
     		.attr("transform", "translate(0," + location +")");
@@ -319,9 +311,8 @@ function heatmapdraw(selector,data) {
     }
 
     function drawAnnotate(svg,datum, rotated,width,height) {
-        svg
-            .attr("width",width)
-            .attr("height",height)
+
+        svg.attr("width",width).attr("height",height)
         //If no metadata, return the function
         if (rowMeta==null) {
             return function(){};
@@ -355,7 +346,7 @@ function heatmapdraw(selector,data) {
             });
 
         gradLegend(lin,20,20)
-		    catLegend(scaling)   
+		catLegend(scaling)   
     };
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -446,8 +437,7 @@ function heatmapdraw(selector,data) {
                                         newcolMeta.push(colMeta[i*cols+j])
                                     }
                                 }
-                            } else {
-                              newcolMeta = null
+                                colMeta = newcolMeta
                             }
                             if (rowMeta != null) {
                                 for (i =0; i<rowHead.length; i++) {
@@ -455,9 +445,8 @@ function heatmapdraw(selector,data) {
                                         newrowMeta.push(rowMeta[i*rows+j])
                                     }
                                 }
-                            } else {
-                              newrowMeta = null
-                            }
+                                rowMeta = newrowMeta
+                            } 
 /////////////////////////////////////
                             //Set new parameters based on selected data
                             dataset.dim[1] = newxLab.length;
@@ -465,8 +454,8 @@ function heatmapdraw(selector,data) {
                             dataset.rows = newyLab;
                             dataset.cols = newxLab;
                             dataset.data = zoomDat;
-                            colAnnote.data = newcolMeta;
-                            rowAnnote.data = newrowMeta;
+                            colAnnote.data = colMeta;
+                            rowAnnote.data = rowMeta;
                             //Changes the margin, if the dimensions are small enough
                             if (dataset.dim[0] <=100) {
                                 marginleft=100;
@@ -493,11 +482,8 @@ function heatmapdraw(selector,data) {
                             dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250,newxDend,oldxStart,x);
                             //New annotation bar, if no annotations, don't do this
                             drawAnnotate(el.select('svg.colAnnote'), colAnnote,false, width-marginleft,10);
-                            colMeta = newcolMeta
-                            
                             drawAnnotate(el.select('svg.rowAnnote'),rowAnnote,true,10,height-margintop);
-                            rowMeta = newrowMeta
-                            zoomDat = [];
+                            //zoomDat = [];
                             //remove blue select rectangle
                             rect.remove();
                     });

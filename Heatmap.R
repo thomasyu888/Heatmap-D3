@@ -30,7 +30,7 @@ formData <- function(mainData,...) {#colAnnote=NULL,rowAnnote=NULL,Rowv=TRUE,Col
   #NEED ROWNAMES/COLNAMES
   dots<- list(...)
   
-  print(dots$distM)
+  print(dots)
 #   
 #   if (length(row.names(mainData))==0) {
 #     row.names(mainData) = c(1:dim(mainData)[1])

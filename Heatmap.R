@@ -26,56 +26,62 @@ HCtoJSON<-function(hc){
   return(JSON)
 }
 
-formData <- function(mainData,...) {#colAnnote=NULL,rowAnnote=NULL,Rowv=TRUE,Colv=TRUE,distM="euclidean",...) {
+formData <- function(mainData,colAnnote,rowAnnote,...) {#colAnnote=NULL,rowAnnote=NULL,Rowv=TRUE,Colv=TRUE,distM="euclidean",...) {
   #NEED ROWNAMES/COLNAMES
   dots<- list(...)
   
-  print(dots)
-#   
-#   if (length(row.names(mainData))==0) {
-#     row.names(mainData) = c(1:dim(mainData)[1])
-#   }
-#   if (length(colnames(mainData))== 0) {
-#     colnames(mainData) = c(1:dim(mainData)[2])
-#   }
-#   if(length(row.names(colAnnote))==0) {
-#     row.names(colAnnote) = c(1:dim(colAnnote)[1])
-#     colnames(colAnnote) = c(1:dim(colAnnote)[2])
-#   }
-#   if(length(row.names(rowAnnote))==0) {
-#     row.names(rowAnnote) = c(1:dim(rowAnnote)[1])
-#     colnames(rowAnnote) = c(1:dim(rowAnnote)[2])
-#   }
-#   
-#   if (Rowv) {
-#     rowClust <- hclust(dist(mainData,method = distM),...)
-#     mainData <- mainData[rowClust$order,]
-#     rowDend <- HCtoJSON(rowClust)
-#     if (dim(rowAnnote)[1]==dim(mainData)[1]) { 
-#       rowAnnotes <- rowAnnote[rowClust$order,]    
-#       rowAnnotes <- matrix(rowAnnotes)
-#     } else {
-#       rowAnnotes <- NULL
-#     }
-#   } else {
-#     rowDend = NULL
-#     rowAnnotes <- matrix(rowAnnote)
-#   }
-# 
-#   if (Colv) {
-#     colClust <- hclust(dist(t(mainData),method = distM),...)
-#     mainData <- mainData[,colClust$order]
-#     colDend <- HCtoJSON(colClust)
-#     if (dim(colAnnote)[1]==dim(mainData)[2]) { 
-#       colAnnotes <- colAnnote[colClust$order,]  
-#       colAnnotes <- matrix(colAnnotes)
-#     } else {
-#       colAnnotes <- NULL
-#     }
-#   } else {
-#     colDend = NULL
-#     colAnnotes <- matrix(colAnnote)
-#   }
+  distM <- dots$distM
+  Colv <- dots$Colv
+  Rowv<- dots$Rowv
+  ClustM <- dots$ClustM
+
+  print(length(row.names(colAnnote)))
+
+  ## sees if rownames/ col names exist for entered matrix
+   if (length(row.names(mainData))==0) {
+     row.names(mainData) = c(1:dim(mainData)[1])
+   }
+   if (length(colnames(mainData))== 0) {
+     colnames(mainData) = c(1:dim(mainData)[2])
+   }
+   
+   if (Rowv) {
+     rowClust <- hclust(dist(mainData,method = distM),method=ClustM)
+     mainData <- mainData[rowClust$order,]
+     rowDend <- HCtoJSON(rowClust)
+     if (dim(rowAnnote)[1]==dim(mainData)[1]) { 
+       rowAnnotes <- rowAnnote[rowClust$order,]    
+       rowAnnotes <- matrix(rowAnnotes)
+        if(length(row.names(colAnnote))==0) {
+          row.names(colAnnote) = c(1:dim(colAnnote)[1])
+          colnames(colAnnote) = c(1:dim(colAnnote)[2])
+        }
+     } else {
+       rowAnnotes <- NULL
+     }
+   } else {
+     rowDend = NULL
+     rowAnnotes <- matrix(rowAnnote)
+   }
+ 
+   if (Colv) {
+     colClust <- hclust(dist(t(mainData),method = distM),method=ClustM)
+     mainData <- mainData[,colClust$order]
+     colDend <- HCtoJSON(colClust)
+     if (dim(colAnnote)[1]==dim(mainData)[2]) { 
+       colAnnotes <- colAnnote[colClust$order,]  
+       colAnnotes <- matrix(colAnnotes)
+        if(length(row.names(rowAnnote))==0 & rowAnnote!=NULL) {
+          row.names(rowAnnote) = c(1:dim(rowAnnote)[1])
+          colnames(rowAnnote) = c(1:dim(rowAnnote)[2])
+        }
+     } else {
+       colAnnotes <- NULL
+     }
+   } else {
+     colDend = NULL
+     colAnnotes <- matrix(colAnnote)
+   }
 # 
 #   rng <- range(mainData)
 #   domain <- seq.int(ceiling(rng[2]), floor(rng[1]), length.out = 100)
@@ -101,7 +107,7 @@ formData <- function(mainData,...) {#colAnnote=NULL,rowAnnote=NULL,Rowv=TRUE,Col
 }
 
 #This creates new rcharts and runs the heatmap
-iHeatmap <- function(data, colAnnote,rowAnnote, ...) {
+iHeatmap <- function(data, colAnnote=NULL,rowAnnote=NULL, ...) {
   dataset <- formData(data, colAnnote,rowAnnote,...)
   heat <- rCharts$new()
   heat$setLib("libraries/heatmap")

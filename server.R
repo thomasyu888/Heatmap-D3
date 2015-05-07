@@ -8,16 +8,10 @@ d <- matrix(d,10,1)
 f <- runif(100)
 f <- matrix(f,100,1)
 
-
-m <- read.csv("PCBC_geneExpr_data.csv",row.names = 1, header = TRUE)
-d <- read.csv("metadata.csv",row.names=1, header=TRUE)
-m <-as.matrix(m)
-d <- as.matrix(d)
-
 shinyServer(function(input, output) {
   output$myChart <- renderChart2({
     source("Heatmap.R")
-    p1 <- iHeatmap(m,d,Rowv=input$y,Colv=input$z,distM = input$v,ClustM = input$x)
+    p1 <- iHeatmap(m,d,f,Rowv=input$y,Colv=input$z,distM = input$v,ClustM = input$x)
     return(p1)
   })
 })

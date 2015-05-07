@@ -67,7 +67,7 @@ function heatmapdraw(selector,data) {
     var colAnnots = drawAnnotate(el.select('svg.colAnnote'),colAnnote, false, width-marginleft,(colHead==null ? 0:colHead.length*5));
     var rowAnnots = drawAnnotate(el.select('svg.rowAnnote'),rowAnnote, true,(rowHead==null ? 0:rowHead.length*5),height-margintop);
 
-    gradLegend(color,5,40)
+    gradLegend(color,5,50)
 
     function heatmapGrid(svg, data, xStart,yStart) {
         // Check for no data
@@ -291,14 +291,17 @@ function heatmapdraw(selector,data) {
 		    .attr("width", width)
 		    .style("fill", function(d) { return d.z; })
 
-        leg.selectAll('text').data(color.domain().map(function(d,i) {
-            return  {y:d};
-        }))
-        .enter().append('text')
+        leg.selectAll('text')
+            .attr('class','legendT')
+            .data(color.domain().map(function(d,i) {
+                return  {y:d};
+            }))
+            .enter().append('text')
             .attr('x',function(d,i) { return width*i})
-            .attr('y',5)
-            .text(function(d) { return d.y})
-            .style('writing-mode','tb');
+            .attr('y',24)
+            .text(function(d) {  
+                if (d.y%1==0) return d.y 
+            })
     }
 
     //Linear scaling for continuous values

@@ -26,14 +26,15 @@ HCtoJSON<-function(hc){
   return(JSON)
 }
 
-formData <- function(mainData,colAnnote,rowAnnote,...) {
+formData <- function(mainData,colAnnote,rowAnnote,Rowv, Colv, distM,...) {
   #NEED ROWNAMES/COLNAMES
-  dots<- list(...)
-  distM <- dots$distM
-  Colv <- dots$Colv
-  Rowv<- dots$Rowv
-  ClustM <- dots$ClustM
   
+  #dots<- list(...)
+  #distM <- dots$distM
+  #Colv <- dots$Colv
+  #Rowv<- dots$Rowv
+  #ClustM <- dots$ClustM
+
   ## sees if rownames/ col names exist for entered matrix
   if (length(row.names(mainData))==0) {
     row.names(mainData) = c(1:dim(mainData)[1])
@@ -46,7 +47,7 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
 #########FIX THIS!!!
 
   if (Rowv) {
-    rowClust <- hclust(dist(mainData,method = distM),method=ClustM)
+    rowClust <- hclust(dist(mainData,distM),...)
     mainData <- mainData[rowClust$order,]
     rowAnnotes <- rowAnnote[rowClust$order,]    
     rowDend <- HCtoJSON(rowClust)
@@ -55,7 +56,7 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
   }
   
   if (Colv) {
-    colClust <- hclust(dist(t(mainData),method = distM),method=ClustM)
+    colClust <- hclust(dist(t(mainData),distM),...)
     mainData <- mainData[,colClust$order]
     colAnnotes <- colAnnote[colClust$order,]  
     colDend <- HCtoJSON(colClust)
@@ -120,8 +121,8 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
 }
 
 #This creates new rcharts and runs the heatmap
-iHeatmap <- function(data, colAnnote=NULL,rowAnnote=NULL, ...) {
-  dataset <- formData(data, colAnnote,rowAnnote,...)
+iHeatmap <- function(data, colAnnote=NULL,rowAnnote=NULL, Rowv = TRUE, Colv=TRUE,distM ="euclidean", ...) {
+  dataset <- formData(data, colAnnote,rowAnnote,Rowv,Colv, distM,...)
   heat <- rCharts$new()
   heat$setLib("libraries/heatmap")
   heat$set(data = dataset)

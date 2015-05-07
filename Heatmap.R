@@ -57,7 +57,7 @@ formData <- function(mainData,colAnnote,rowAnnote,...) {
     rowDend = NULL
     rowAnnotes <- rowAnnote
   }
-  
+  ### NEED TO RUN EVEN IF METADATA is different dimensions
   if (Colv) {
     colClust <- hclust(dist(t(mainData),distM),ClustM)
     mainData <- mainData[,colClust$order]

@@ -60,7 +60,6 @@ function heatmapdraw(selector,data) {
     	.domain(mainDat.domain)
         .range(mainDat.colors);
         
-
     //Creates everything for the heatmap
     var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-margintop);
     var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250);
@@ -359,8 +358,6 @@ function heatmapdraw(selector,data) {
 
         var cols = dataset.dim[1]; //x
         var rows = dataset.dim[0]; //y
-      
-        var rows= [];
         var zoomDat = [];
         var newxLab=[];
         var newyLab = [];
@@ -404,12 +401,12 @@ function heatmapdraw(selector,data) {
                             //because I dont want the x dendrogram to change
                             if (num==1) {
                                 xStart = 0;
-                                xFinish = dataset.dim[1]
+                                xFinish = cols
                             //If the X dendrogram is selected, make the y dendrogram undefined 
                             //because I dont want the y dendrogram to change
                             } else if (num==2) {
                                 yStart = 0;
-                                yFinish = dataset.dim[0]
+                                yFinish = rows
                             }
 //////////////////////////////////////
                             //Get the data selected and send it back to heatmapgrid
@@ -419,7 +416,6 @@ function heatmapdraw(selector,data) {
 	                                newxDend.push(d3.select(".ends_X"+i).attr("id"))
 	                            }
                             }
-
                             for (i=yStart;i<yFinish; i++) {
                                 newyLab.push(dataset.rows[i]);
                                 if (data.rows !=null) { //If there is no row clustering

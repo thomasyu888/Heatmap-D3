@@ -51,7 +51,6 @@ function heatmapdraw(selector,data) {
     var xGlobal = d3.scale.linear().domain([0,mainDat.dim[1]])
     var yGlobal = d3.scale.linear().domain([0,mainDat.dim[0]])
 
-
     //Heatmap colors
     var color = d3.scale.linear()
     	.domain(mainDat.domain)

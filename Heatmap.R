@@ -26,74 +26,78 @@ HCtoJSON<-function(hc){
   return(JSON)
 }
 
-formData <- function(mainData, colAnnote,rowAnnote,Rowv,Colv,distM,...) {
+formData <- function(mainData,...) {#colAnnote=NULL,rowAnnote=NULL,Rowv=TRUE,Colv=TRUE,distM="euclidean",...) {
   #NEED ROWNAMES/COLNAMES
-  if (length(row.names(mainData))==0) {
-    row.names(mainData) = c(1:dim(mainData)[1])
-  }
-  if (length(colnames(mainData))== 0) {
-    colnames(mainData) = c(1:dim(mainData)[2])
-  }
-  if(length(row.names(colAnnote))==0) {
-    row.names(colAnnote) = c(1:dim(colAnnote)[1])
-    colnames(colAnnote) = c(1:dim(colAnnote)[2])
-  }
-  if(length(row.names(rowAnnote))==0) {
-    row.names(rowAnnote) = c(1:dim(rowAnnote)[1])
-    colnames(rowAnnote) = c(1:dim(rowAnnote)[2])
-  }
+  dots<- list(...)
   
-  if (Rowv) {
-    rowClust <- hclust(dist(mainData,method = distM),...)
-    mainData <- mainData[rowClust$order,]
-    rowDend <- HCtoJSON(rowClust)
-    if (dim(rowAnnote)[1]==dim(mainData)[1]) { 
-      rowAnnotes <- rowAnnote[rowClust$order,]    
-      rowAnnotes <- matrix(rowAnnotes)
-    } else {
-      rowAnnotes <- NULL
-    }
-  } else {
-    rowDend = NULL
-    rowAnnotes <- matrix(rowAnnote)
-  }
-
-  if (Colv) {
-    colClust <- hclust(dist(t(mainData),method = distM),...)
-    mainData <- mainData[,colClust$order]
-    colDend <- HCtoJSON(colClust)
-    if (dim(colAnnote)[1]==dim(mainData)[2]) { 
-      colAnnotes <- colAnnote[colClust$order,]  
-      colAnnotes <- matrix(colAnnotes)
-    } else {
-      colAnnotes <- NULL
-    }
-  } else {
-    colDend = NULL
-    colAnnotes <- matrix(colAnnote)
-  }
-
-  rng <- range(mainData)
-  domain <- seq.int(ceiling(rng[2]), floor(rng[1]), length.out = 100)
-  colors <- heat.colors(100)
-  colors <- sub('FF$', '', colors)
-  
-
-  colMeta <- list(data = colAnnotes,
-                 header = colnames(colAnnote))
-  
-  rowMeta <- list(data = rowAnnotes,
-                  header = colnames(rowAnnote))
-  
-  matrix <- list(data = as.numeric(t(mainData)),
-                 dim = dim(mainData),
-                 rows = row.names(mainData),
-                 cols = colnames(mainData),
-                 colors = colors,
-                 domain = domain)
-  
-  dataset <- list(rows = rowDend, cols = colDend, colMeta = colMeta,rowMeta = rowMeta, matrix = matrix)
-  return(dataset)
+  print(dots$distM)
+#   
+#   if (length(row.names(mainData))==0) {
+#     row.names(mainData) = c(1:dim(mainData)[1])
+#   }
+#   if (length(colnames(mainData))== 0) {
+#     colnames(mainData) = c(1:dim(mainData)[2])
+#   }
+#   if(length(row.names(colAnnote))==0) {
+#     row.names(colAnnote) = c(1:dim(colAnnote)[1])
+#     colnames(colAnnote) = c(1:dim(colAnnote)[2])
+#   }
+#   if(length(row.names(rowAnnote))==0) {
+#     row.names(rowAnnote) = c(1:dim(rowAnnote)[1])
+#     colnames(rowAnnote) = c(1:dim(rowAnnote)[2])
+#   }
+#   
+#   if (Rowv) {
+#     rowClust <- hclust(dist(mainData,method = distM),...)
+#     mainData <- mainData[rowClust$order,]
+#     rowDend <- HCtoJSON(rowClust)
+#     if (dim(rowAnnote)[1]==dim(mainData)[1]) { 
+#       rowAnnotes <- rowAnnote[rowClust$order,]    
+#       rowAnnotes <- matrix(rowAnnotes)
+#     } else {
+#       rowAnnotes <- NULL
+#     }
+#   } else {
+#     rowDend = NULL
+#     rowAnnotes <- matrix(rowAnnote)
+#   }
+# 
+#   if (Colv) {
+#     colClust <- hclust(dist(t(mainData),method = distM),...)
+#     mainData <- mainData[,colClust$order]
+#     colDend <- HCtoJSON(colClust)
+#     if (dim(colAnnote)[1]==dim(mainData)[2]) { 
+#       colAnnotes <- colAnnote[colClust$order,]  
+#       colAnnotes <- matrix(colAnnotes)
+#     } else {
+#       colAnnotes <- NULL
+#     }
+#   } else {
+#     colDend = NULL
+#     colAnnotes <- matrix(colAnnote)
+#   }
+# 
+#   rng <- range(mainData)
+#   domain <- seq.int(ceiling(rng[2]), floor(rng[1]), length.out = 100)
+#   colors <- heat.colors(100)
+#   colors <- sub('FF$', '', colors)
+#   
+# 
+#   colMeta <- list(data = colAnnotes,
+#                  header = colnames(colAnnote))
+#   
+#   rowMeta <- list(data = rowAnnotes,
+#                   header = colnames(rowAnnote))
+#   
+#   matrix <- list(data = as.numeric(t(mainData)),
+#                  dim = dim(mainData),
+#                  rows = row.names(mainData),
+#                  cols = colnames(mainData),
+#                  colors = colors,
+#                  domain = domain)
+#   
+#   dataset <- list(rows = rowDend, cols = colDend, colMeta = colMeta,rowMeta = rowMeta, matrix = matrix)
+#   return(dataset)
 }
 
 #This creates new rcharts and runs the heatmap

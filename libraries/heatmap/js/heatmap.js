@@ -66,8 +66,11 @@ function heatmapdraw(selector,data) {
     var heatmap = heatmapGrid(el.select('svg.colormap'), mainDat,0,0);
     var colAnnots = drawAnnotate(el.select('svg.colAnnote'),colAnnote, false, width-marginleft,(colHead==null ? 0:colHead.length*5));
     var rowAnnots = drawAnnotate(el.select('svg.rowAnnote'),rowAnnote, true,(rowHead==null ? 0:rowHead.length*5),height-margintop);
-
-    gradLegend(color,5,50)
+		
+		heatLegend = d3.svg.legend().units("Expression Levels").cellWidth(5).cellHeight(25).inputScale(color).cellStepping(100);
+		d3.select("svg").append("g").attr("transform", "translate(50,140)").attr("class", "legend").call(heatLegend);
+        
+    //gradLegend(color,5,50)
 
     function heatmapGrid(svg, data, xStart,yStart) {
         // Check for no data
@@ -250,7 +253,7 @@ function heatmapdraw(selector,data) {
         };
     }
 //////////////////////////////////////////////////////////////////////////////////////
-
+/*
     //Legend for the annotations for categorical annotations!
     function catLegend(scales) {
     	var legsvg = el.select('svg.legends').attr('width',1000).attr('height', 80)
@@ -273,7 +276,7 @@ function heatmapdraw(selector,data) {
             .attr('y',10)
             .text(function(d) { return d});
        }
-
+/*
     //Legend for quantized values
     function gradLegend(color,width, location) {
     	var legsvg = el.select('svg.legends').attr('width',1000).attr('height', 80)
@@ -300,14 +303,13 @@ function heatmapdraw(selector,data) {
             .attr('x',function(d,i) { return width*i})
             .attr('y',24)
             .text(function(d) {  
-                if (d.y%1==0) return d.y 
+                if (d.y%1==0) return "≤ "+d.y 
             })
     }
-
+/*
     //Linear scaling for continuous values
     function linScale(selectedDat) { 
-        var max = Math.max.apply(Math,selectedDat);
-        var min = Math.min.apply(Math,selectedDat);
+
 
         var scaling = d3.scale.linear()
             .domain([min, max])
@@ -315,7 +317,20 @@ function heatmapdraw(selector,data) {
 
         return scaling;
     }
+    */
+    function linScale(selectedDat) { 
+    	var max = Math.max.apply(Math,selectedDat);
+        var min = Math.min.apply(Math,selectedDat);
 
+        var scaling = d3.scale.threshold()
+            .domain([min,max])
+            .range(['powderblue', 'darkblue']);
+
+		horizontalLegend = d3.svg.legend().units("Miles").cellWidth(10).cellHeight(25).inputScale(scaling).cellStepping(100);
+		d3.select("svg").append("g").attr("transform", "translate(50,70)").attr("class", "legend").call(horizontalLegend);
+        
+        return scaling;
+    }
     function drawAnnotate(svg,datum, rotated,width,height) {
 
         svg.attr("width",width).attr("height",height)
@@ -350,8 +365,16 @@ function heatmapdraw(selector,data) {
                 return (isNaN(d) ? scaling(d):lin(d));
             });
 
-        gradLegend(lin,20,20)
-		catLegend(scaling)   
+        //gradLegend(lin,20,20)
+		    //catLegend(scaling)   
+    verticalLegend = d3.svg.legend()
+    	.labelFormat("none").cellPadding(5).orientation("vertical")
+    	.units("Annotations").cellWidth(25).cellHeight(18)
+    	.inputScale(scaling).cellStepping(10);
+
+  	d3.select("svg").append("g").attr("transform", "translate(50,20)").attr("class", "legend").call(verticalLegend);
+
+
     };
 
 //////////////////////////////////////////////////////////////////////////////////////

@@ -61,9 +61,11 @@ function heatmapdraw(selector,data) {
     //	.domain(mainDat.domain)
       //  .range(mainDat.colors);
         
+
+        //Color scheme needs to be fixed
     var color = d3.scale.threshold()
-    	.domain([0,0.2,0.4,0.6,0.8,1])
-    	.range(colorbrewer.Reds[5])
+    	.domain([-6,-4,-2,-1,0,1,2,4,6])
+    	.range(colorbrewer.YlOrRd[9])
 
     //Creates everything for the heatmap
     var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-margintop);
@@ -72,8 +74,8 @@ function heatmapdraw(selector,data) {
     var colAnnots = drawAnnotate(el.select('svg.colAnnote'),colAnnote, false, width-marginleft,(colHead==null ? 0:colHead.length*5));
     var rowAnnots = drawAnnotate(el.select('svg.rowAnnote'),rowAnnote, true,(rowHead==null ? 0:rowHead.length*5),height-margintop);
 		
-		heatLegend = d3.svg.legend().units("").cellWidth(80).cellHeight(10).inputScale(color).cellStepping(100);
-		d3.select("svg").append("g").attr("transform", "translate(240,30)").attr("class", "legend").call(heatLegend);
+	heatLegend = d3.svg.legend().units("").cellWidth(80).cellHeight(10).inputScale(color).cellStepping(100);
+	d3.select("svg").append("g").attr("transform", "translate(240,30)").attr("class", "legend").call(heatLegend);
         
     //gradLegend(color,5,50)
 
@@ -311,18 +313,23 @@ function heatmapdraw(selector,data) {
                 if (d.y%1==0) return "≤ "+d.y 
             })
     }
-/*
+*/
     //Linear scaling for continuous values
     function linScale(selectedDat) { 
+    	var max = Math.max.apply(Math,selectedDat);
+        var min = Math.min.apply(Math,selectedDat);
 
 
         var scaling = d3.scale.linear()
             .domain([min, max])
             .range(['powderblue', 'darkblue']);
 
+		horizontalLegend = d3.svg.legend().units("").labelFormat("none").cellWidth(50).cellHeight(10).inputScale(scaling).cellStepping(100);
+		d3.select("svg").append("g").attr("transform", "translate(113,30)").attr("class", "legend").call(horizontalLegend);
+
         return scaling;
     }
-    */
+    /*
     function linScale(selectedDat) { 
     	var max = Math.max.apply(Math,selectedDat);
         var min = Math.min.apply(Math,selectedDat);
@@ -336,6 +343,7 @@ function heatmapdraw(selector,data) {
         
         return scaling;
     }
+    */
     function drawAnnotate(svg,datum, rotated,width,height) {
 
         svg.attr("width",width).attr("height",height)
@@ -372,9 +380,9 @@ function heatmapdraw(selector,data) {
 
         //gradLegend(lin,20,20)
 		    //catLegend(scaling)   
-    verticalLegend = d3.svg.legend()
+    verticalLegend = d3.svg.legend().orientation("vertical")
     	.labelFormat("none").cellPadding(5)
-    	.units("Annotations").cellWidth(25).cellHeight(18)
+    	.units("").cellWidth(25).cellHeight(18)
     	.inputScale(scaling).cellStepping(10);
 
   	d3.select("svg").append("g").attr("transform", "translate(10,30)").attr("class", "legend").call(verticalLegend);

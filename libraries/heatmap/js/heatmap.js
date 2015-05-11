@@ -61,7 +61,6 @@ function heatmapdraw(selector,data) {
     //	.domain(mainDat.domain)
       //  .range(mainDat.colors);
         
-
         //Color scheme needs to be fixed
     var color = d3.scale.threshold()
     	.domain([-6,-4,-2,-1,0,1,2,4,6])
@@ -141,8 +140,10 @@ function heatmapdraw(selector,data) {
                 d3.select(".ends_Y"+(j+yStart)).classed("hover",false);
                 d3.select(".ends_X"+(i%cols+xStart)).classed("hover",false);
                 info.classed('hover',false)
-            });
-    
+            })
+
+ 
+
         //y labels if there aren't too many 
         if (marginleft!=0) {
             var yAxis =svg.selectAll('.yLabel').data(data.rows);
@@ -171,7 +172,6 @@ function heatmapdraw(selector,data) {
                 .text(function(d) { return d; })
                 .attr("id", function(d,i) { return "xLab" + i; })
         }
-        
         //Select rectangle on heatmap and dendrograms
         var selectHeat = selectArea(colmap,el.select('svg.colormap'),data,undefined,xStart,yStart);
         var selectYDend = selectArea(rowDend,el.select('svg.rowDend'),data,1,xStart,yStart);
@@ -380,9 +380,9 @@ function heatmapdraw(selector,data) {
 
         //gradLegend(lin,20,20)
 		    //catLegend(scaling)   
-    verticalLegend = d3.svg.legend().orientation("vertical")
-    	.labelFormat("none").cellPadding(5)
-    	.units("").cellWidth(25).cellHeight(18)
+
+    verticalLegend = d3.svg.legend().cellPadding(5).orientation("vertical")
+    	.units("Annotation").cellWidth(25).cellHeight(18)
     	.inputScale(scaling).cellStepping(10);
 
   	d3.select("svg").append("g").attr("transform", "translate(10,30)").attr("class", "legend").call(verticalLegend);

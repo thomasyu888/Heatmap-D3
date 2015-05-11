@@ -56,10 +56,15 @@ function heatmapdraw(selector,data) {
     var yGlobal = d3.scale.linear().domain([0,mainDat.dim[0]])
 
     //Heatmap colors
-    var color = d3.scale.linear()
-    	.domain(mainDat.domain)
-        .range(mainDat.colors);
+
+    //var color = d3.scale.linear()
+    //	.domain(mainDat.domain)
+      //  .range(mainDat.colors);
         
+    var color = d3.scale.threshold()
+    	.domain([0,0.2,0.4,0.6,0.8,1])
+    	.range(colorbrewer.Reds[5])
+
     //Creates everything for the heatmap
     var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-margintop);
     var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250);
@@ -67,8 +72,8 @@ function heatmapdraw(selector,data) {
     var colAnnots = drawAnnotate(el.select('svg.colAnnote'),colAnnote, false, width-marginleft,(colHead==null ? 0:colHead.length*5));
     var rowAnnots = drawAnnotate(el.select('svg.rowAnnote'),rowAnnote, true,(rowHead==null ? 0:rowHead.length*5),height-margintop);
 		
-		heatLegend = d3.svg.legend().units("Expression Levels").cellWidth(5).cellHeight(25).inputScale(color).cellStepping(100);
-		d3.select("svg").append("g").attr("transform", "translate(50,140)").attr("class", "legend").call(heatLegend);
+		heatLegend = d3.svg.legend().units("").cellWidth(80).cellHeight(10).inputScale(color).cellStepping(100);
+		d3.select("svg").append("g").attr("transform", "translate(240,30)").attr("class", "legend").call(heatLegend);
         
     //gradLegend(color,5,50)
 
@@ -326,8 +331,8 @@ function heatmapdraw(selector,data) {
             .domain([min,max])
             .range(['powderblue', 'darkblue']);
 
-		horizontalLegend = d3.svg.legend().units("Miles").cellWidth(10).cellHeight(25).inputScale(scaling).cellStepping(100);
-		d3.select("svg").append("g").attr("transform", "translate(50,70)").attr("class", "legend").call(horizontalLegend);
+		horizontalLegend = d3.svg.legend().units("").cellWidth(50).cellHeight(10).inputScale(scaling).cellStepping(100);
+		d3.select("svg").append("g").attr("transform", "translate(113,30)").attr("class", "legend").call(horizontalLegend);
         
         return scaling;
     }
@@ -368,11 +373,11 @@ function heatmapdraw(selector,data) {
         //gradLegend(lin,20,20)
 		    //catLegend(scaling)   
     verticalLegend = d3.svg.legend()
-    	.labelFormat("none").cellPadding(5).orientation("vertical")
+    	.labelFormat("none").cellPadding(5)
     	.units("Annotations").cellWidth(25).cellHeight(18)
     	.inputScale(scaling).cellStepping(10);
 
-  	d3.select("svg").append("g").attr("transform", "translate(50,20)").attr("class", "legend").call(verticalLegend);
+  	d3.select("svg").append("g").attr("transform", "translate(10,30)").attr("class", "legend").call(verticalLegend);
 
 
     };

@@ -14,13 +14,6 @@
   user-select: none;
 }
 
-div.hover {
-  background:white;
-  display:inline-block;
-  opacity:0.9;
-  white-space:nowrap;
-  z-index:5;
-}
 
 .colAnnote {
   position: absolute;
@@ -62,8 +55,9 @@ rect.hoverover {
 
 text.hover {
   font-weight: bold;
-  font-size: 9px;
+  stroke: 9px;
 }
+  
 .xAxis {
   font-size:4px;
   writing-mode: tb;
@@ -111,5 +105,10 @@ polyline.hover {
   left:100px;
   font-size:10px;
 }
-
-
+.d3heatmap-tip {
+  font-size: 10px;
+  display:inline-block;
+  background-color: white;
+  padding: 6px 12px;
+  white-space:nowrap;
+}

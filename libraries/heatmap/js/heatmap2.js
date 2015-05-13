@@ -232,30 +232,10 @@ function heatmapdraw(selector,data) {
                 });
                 controller.datapoint_hover({col:col, row:row, value:value});
 
-                //d3.select("#yLab"+row).classed("hover",true);
-                //d3.select("#xLab"+col).classed("hover",true);
-                //d3.select(this).classed("hoverover",true);
-                //xStart and yStart have to be passed in so that 
-                //the hoverover works for the dendrogram
-                //d3.select(".ends_Y"+row).classed("hover",true);
-                //d3.select(".ends_X"+col).classed("hover",true);
-
-                //info.classed("hover",true)
-                  //  .style('top', d3.event.clientY+15+'px')
-                    //.style('left', d3.event.clientX+'px')
-                    //.html(output)
             })
             .on("mouseleave", function() {
-                //var col = Math.floor(x.invert(d3.event.offsetX));
-                //var row = Math.floor(y.invert(d3.event.offsetY));
                 tip.hide().style("display","none")
                 controller.datapoint_hover(null);
-                //d3.select("#yLab"+row).classed("hover",false);
-                //d3.select("#xLab"+col).classed("hover",false);
-                //d3.select(this).classed("hoverover",false);
-                //d3.select(".ends_Y"+row).classed("hover",false);
-                //d3.select(".ends_X"+col).classed("hover",false);
-                //info.classed('hover',false)
             });
     }
 

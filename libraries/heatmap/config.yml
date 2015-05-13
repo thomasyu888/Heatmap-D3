@@ -1,4 +1,4 @@
 heatmap:
-  css: css/heatmap.css
-  jshead: [js/d3.min.js, js/heatmap.js, js/legend.js, js/colorbrewer.js]
+  css: css/heatmap2.css
+  jshead: [js/d3.min.js, js/heatmap2.js, js/legend.js, js/colorbrewer.js,js/index.js]
 

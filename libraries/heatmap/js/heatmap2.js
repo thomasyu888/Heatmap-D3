@@ -259,8 +259,8 @@ function heatmapdraw(selector,data) {
         // Create the actual axis
         var axisNodes = svg.append("g")
             .call(axis);
-        var fontSize = Math.min(4, Math.max(9, scale.rangeBand() - (rotated ? 11: 8))) + "px";
-            axisNodes.selectAll("text").style("text-anchor", "start").style("font-size", fontSize).attr("class","axisLabels"   )
+            axisNodes.selectAll("text")
+            .style("text-anchor", "start")
             .attr("id", function(d,i) { return rotated ? "xLab" + i : "yLab" + i })
 
 

@@ -1,5 +1,5 @@
 function heatmapdraw(selector,data) {
-
+    
     var Controller = function() {
         this._events = d3.dispatch("datapoint_hover", "transform");
         this._datapoint_hover = {x: null, y: null, value: null};
@@ -9,8 +9,8 @@ function heatmapdraw(selector,data) {
     (function() {
         this.datapoint_hover = function(_) {
             if (!arguments.length) return this._datapoint_hover;
-                this._datapoint_hover = _;
-                this._events.datapoint_hover.call(this, _);
+            this._datapoint_hover = _;
+            this._events.datapoint_hover.call(this, _);
         };
 
         this.transform = function(_) {
@@ -49,7 +49,7 @@ function heatmapdraw(selector,data) {
         var yAxis = inner.append("svg").classed("yAxis",true)
 
     })();
-    
+
     //Global annotations variables
     var colAnnote = data.colMeta,
         rowAnnote = data.rowMeta,
@@ -88,11 +88,11 @@ function heatmapdraw(selector,data) {
     	.range(colorbrewer.YlOrRd[9])
 
     //Creates everything for the heatmap
-    var row = dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-margintop);
-    var col = dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250);
+    var row = (data.rows ==null) ? 0 : dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-margintop);
+    var col = (data.cols ==null) ? 0 : dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250);
     var heatmap = heatmapGrid(el.select('svg.colormap'), mainDat, width-marginleft,height-margintop);
-    var colAnnots = (colMeta == null) ? 0 : drawAnnotate(el.select('svg.colAnnote'),colAnnote, false, width-marginleft,colHead.length*5);
-    var rowAnnots = (rowMeta == null) ? 0: drawAnnotate(el.select('svg.rowAnnote'),rowAnnote, true,rowHead.length*5,height-margintop);
+    //var colAnnots = (colMeta == null) ? 0 : drawAnnotate(el.select('svg.colAnnote'),colAnnote, true, width-marginleft,colHead.length*5);
+    var rowAnnots = (rowMeta == null) ? 0: drawAnnotate(el.select('svg.rowAnnote'),rowAnnote, false,rowHead.length*5,height-margintop);
 	var xLabel = (mainDat.dim[0] > 100) ? 0 : axis(el.select('svg.xAxis'),data.matrix.cols,true,width-marginleft,150)
     var yLabel = (mainDat.dim[1] > 300) ? 0 : axis(el.select('svg.yAxis'),data.matrix.rows,false, 100, height-margintop)
 	
@@ -111,14 +111,12 @@ function heatmapdraw(selector,data) {
         
         var merged = data.data;
         
-        x.domain([0, cols]).range([0, width-marginleft]);
-        y.domain([0, rows]).range([0, height-margintop]);
+        x.domain([0, cols]).range([0, width]);
+        y.domain([0, rows]).range([0, height]);
 
         var tip = d3.tip()
             .attr('class', 'd3heatmap-tip')
-            .html(function(d) {
-                return d;
-            })
+            .html(function(d) { return d; })
             .direction("se")
             .style("position", "fixed");
         
@@ -175,7 +173,7 @@ function heatmapdraw(selector,data) {
                 return color(d);
             })
             
-        rect.exit().remove();
+        rect.exit().remove();   
         rect.append("title")
             .text(function(d, i) { return (d === null) ? "NA" : d + ""; })
         rect.call(tip);
@@ -199,12 +197,12 @@ function heatmapdraw(selector,data) {
             y.range([_.translate[1], height * _.scale[1] + _.translate[1]]);
             draw(rect.transition().duration(500).ease("linear"));
         });
-        
 
         var brushG = svg.append("g")
             .attr('class', 'brush')
             .call(brush)
             .call(brush.event);
+
         brushG.select("rect.background")
             .on("mouseenter", function() {
                 tip.style("display", "block");
@@ -212,6 +210,7 @@ function heatmapdraw(selector,data) {
             .on("mousemove", function() {
                 var col = Math.floor(x.invert(d3.event.offsetX));
                 var row = Math.floor(y.invert(d3.event.offsetY));
+
                 var value = merged[row*cols + col];
                 var output = 'Gene loci: '+ data.rows[row]+'<br>Level of expression: '+value+'<br>ID: '+ data.cols[col] +'<br>Annotations:'
                 //Get all the metadata
@@ -231,12 +230,13 @@ function heatmapdraw(selector,data) {
                     opacity: 0.9
                 });
                 controller.datapoint_hover({col:col, row:row, value:value});
-
             })
             .on("mouseleave", function() {
                 tip.hide().style("display","none")
                 controller.datapoint_hover(null);
             });
+            
+        
     }
 
     function axis(svg, data, rotated,width,height) {
@@ -442,37 +442,49 @@ function heatmapdraw(selector,data) {
     */
     function drawAnnotate(svg,datum, rotated,width,height) {
 
+        //x.domain([0, cols]).range([0, width-marginleft]);
         svg.attr("width",width).attr("height",height)
-        //If no metadata, return the function
-        if (datum.data==null) {
-            return function(){};
-        }
 
         var scaling = d3.scale.category10()
-        var cols = datum.data.length/datum.header.length
+        var length = datum.data.length/datum.header.length
+
+        y.domain([0, length]).range([0, height]);
+
         for (k=0;k<datum.header.length;k++) {
         	//If the data is not cateogorical value, get all the values to get a linear scale
-        	if (!isNaN(datum.data[k*cols])) {
-        		var lin = linScale(datum.data.slice(k*cols, (1+k)*cols-1));
+        	if (!isNaN(datum.data[k*length])) {
+        		var lin = linScale(datum.data.slice(k*length, (1+k)*length-1));
         	}
         }
         //Annotation svg
         var annotation = svg.selectAll('.annotate').data(datum.data);
             annotation.enter().append('svg:rect').classed("annotate",true)
-            annotation.exit().remove();
-            annotation
-            .attr('width' , function(d) { return (rotated ? 4 :x(1)); })
-            .attr('height', function(d) { return (rotated ? y(1) : 4)})
-            .attr('x' , function(d,i) {
-                //This is to account for 2 or more sets of annotation data
-                return (rotated ? 5*Math.floor(i/cols): x(i%cols));
-            })
-            .attr('y', function(d,i) {
-                return (rotated? y(i%cols):5*Math.floor(i/cols));
-            })
+
             .style('fill',function(d,i) {
                 return (isNaN(d) ? scaling(d):lin(d));
             });
+            annotation.exit().remove();
+
+
+        function draw(selection) {
+            selection
+                .attr('x' , function(d,i) {
+                    //This is to account for 2 or more sets of annotation data
+                    return (rotated ? x(i%length) : 5*Math.floor(i/length));
+                })
+                .attr('y', function(d,i) { return (rotated? 5*Math.floor(i/length) : y(i%length)); })
+                .attr('width' , function(d) { return (rotated ? x(1) : 4); })
+                .attr('height', function(d) { return (rotated ? 4 : y(1)); })
+        }
+
+        draw(annotation);
+
+
+        controller.on('transform.annotation-' + (rotated ? 'x' : 'y'), function(_) {
+            //x.range([_.translate[0], width * _.scale[0] + _.translate[0]]);
+            y.range([_.translate[1], height * _.scale[1] + _.translate[1]]);
+            draw(annotation.transition().duration(500).ease("linear"));
+        });
 
         //gradLegend(lin,20,20)
 		    //catLegend(scaling)   
@@ -483,7 +495,7 @@ function heatmapdraw(selector,data) {
 
   	//d3.select("svg").append("g").attr("transform", "translate(10,30)").attr("class", "legend").call(verticalLegend);
 
-
+ 
     };
 };
 

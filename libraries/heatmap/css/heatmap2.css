@@ -43,21 +43,7 @@
   display:none;
   font-size:10px;
 }
-rect.zoom {
-  stroke: steelblue;
-  fill-opacity: 0.2;
-}
 
-rect.hoverover {
-  stroke-width:1px;
-  stroke: white;
-}
-
-text.hover {
-  font-weight: bold;
-  stroke: 9px;
-}
-  
 .xAxis {
   font-size: 4px;
   writing-mode: tb;
@@ -111,4 +97,9 @@ polyline.hover {
   background-color: white;
   padding: 6px 12px;
   white-space:nowrap;
+}
+.info {
+  position:absolute;
+  display:none;
+  font-size:10px;
 }

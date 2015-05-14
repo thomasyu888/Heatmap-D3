@@ -1,17 +1,17 @@
 function heatmapdraw(selector,data) {
     
     var Controller = function() {
-        this._events = d3.dispatch("datapoint_hover", "transform");
-        this._datapoint_hover = {x: null, y: null, value: null};
+        this._events = d3.dispatch("transform");
+        //this._datapoint_hover = {x: null, y: null, value: null};
         this._transform = null;
     };
 
     (function() {
-        this.datapoint_hover = function(_) {
-            if (!arguments.length) return this._datapoint_hover;
-            this._datapoint_hover = _;
-            this._events.datapoint_hover.call(this, _);
-        };
+        //this.datapoint_hover = function(_) {
+          //  if (!arguments.length) return this._datapoint_hover;
+           // this._datapoint_hover = _;
+           // this._events.datapoint_hover.call(this, _);
+        //};
 
         this.transform = function(_) {
             if (!arguments.length) return this._transform;
@@ -37,7 +37,6 @@ function heatmapdraw(selector,data) {
     var el = d3.select(myChart);
 
     (function() { 
-
         var inner = el.append("div").classed("inner", true);
         //colDend is xDend, rowDend is yDend, colmap is heatmap
         var colDend = inner.append("svg").classed("colDend", true);
@@ -233,11 +232,11 @@ function heatmapdraw(selector,data) {
                     left: d3.event.clientX + 15 + "px",
                     opacity: 0.9
                 });
-                controller.datapoint_hover({col:col, row:row, value:value});
+                //controller.datapoint_hover({col:col, row:row, value:value});
             })
             .on("mouseleave", function() {
                 tip.hide().style("display","none")
-                controller.datapoint_hover(null);
+                //controller.datapoint_hover(null);
             });
             
         
@@ -270,7 +269,6 @@ function heatmapdraw(selector,data) {
 
         controller.on('transform.axis-' + (rotated ? 'x' : 'y'), function(_) {
             var dim = rotated ? 0 : 1;
-
             var rb = [_.translate[dim], (rotated ? width : height) * _.scale[dim] + _.translate[dim]];
             scale.rangeBands(rb);
             var tAxisNodes = axisNodes.transition().duration(500).ease('linear');
@@ -278,14 +276,14 @@ function heatmapdraw(selector,data) {
             // Set text-anchor on the non-transitioned node to prevent jumpiness
             // in RStudio Viewer pane
             axisNodes.selectAll("text").style("text-anchor", "start");
-            tAxisNodes.selectAll("g")
-                .style("opacity", function(d, i) {
-                    if (i >= _.extent[0][dim] && i < _.extent[1][dim]) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                });
+            //tAxisNodes.selectAll("g")
+             //   .style("opacity", function(d, i) {
+              //      if (i >= _.extent[0][dim] && i < _.extent[1][dim]) {
+               //         return 1;
+                //    } else {
+                //        return 0;
+                 //   }
+                //});
             tAxisNodes
                 .selectAll("text")
                 .style("text-anchor", "start");
@@ -302,6 +300,10 @@ function heatmapdraw(selector,data) {
             .domain([0, height])
             .range([0, height]);
         
+        var dscale = d3.scale.linear()
+        	.domain([0, rotated ?  mainDat.dim[1] : mainDat.dim[0]])
+        	.range([0, rotated ? width : height])
+        
         var cluster = d3.layout.cluster()
             .separation(function(a, b) { return 1; })
             .size([rotated ? width : height, (rotated ? height : width) - 160]);
@@ -313,6 +315,45 @@ function heatmapdraw(selector,data) {
             // Rotate
             transform = "rotate(-90) translate(-2,0)";
         }
+/////////////
+        var brush = d3.svg.brush()
+            .x(dscale)
+            .y(dscale)
+            .clamp([true, true])
+            .on('brush', function() {
+                var extent = brush.extent();
+                extent[0][0] = Math.round(extent[0][0]);
+                extent[0][1] = Math.round(extent[0][1]);
+                extent[1][0] = Math.round(extent[1][0]);
+                extent[1][1] = Math.round(extent[1][1]);
+                d3.select(this).call(brush.extent(extent));
+            })
+            .on('brushend', function() {
+                if (brush.empty()) {
+                    controller.transform({
+                        scale: [1,1],
+                        translate: [0,0],
+                        extent: [[0,0],[mainDat.dim[1],mainDat.dim[0]]]
+                    });
+                } else {
+                    var tf = controller.transform();
+                    var ex = brush.extent();
+                    var scale = [
+                    	rotated ? mainDat.dim[1] / (ex[1][0] - ex[0][0]) :1,
+                    	rotated ? 1: mainDat.dim[0] / (ex[1][1] - ex[0][1])
+                    ];
+                    var translate = [
+                    	rotated ? ex[0][0] * (width / mainDat.dim[1]) * scale[0] * -1 :0 ,
+                    	rotated ? 0 : ex[0][1] * (height / mainDat.dim[0]) * scale[1] * -1
+                    ];
+                    controller.transform({scale: scale, translate: translate, extent: ex});
+                }
+                brush.clear();
+                d3.select(this).call(brush).select(".brush .extent")
+                    .style({fill: "steelblue", stroke: "steelblue",opacity: 0.5});
+            });
+
+//////////
 
         var dendrG = svg
             .attr("width", width)
@@ -349,6 +390,7 @@ function heatmapdraw(selector,data) {
             selection
                 .attr("points", elbow);
         }
+        draw(lines);
 
         controller.on('transform.dendr-' + (rotated ? 'x' : 'y'), function(_) {
             var scaleBy = _.scale[rotated ? 0 : 1];
@@ -356,8 +398,12 @@ function heatmapdraw(selector,data) {
             y.range([translateBy, height * scaleBy + translateBy]);
             draw(lines.transition().duration(500).ease("linear"));
         });
+        
+        var brushG = svg.append("g")
+            .attr('class', 'brush')
+            .call(brush)
+            .call(brush.event);
 
-        draw(lines);
     }
 //////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -450,6 +496,7 @@ function heatmapdraw(selector,data) {
 
         var scaling = d3.scale.category10()
         var length = datum.data.length/datum.header.length
+
         var x = d3.scale.linear()
             .domain([0, length])
             .range([0, width]);

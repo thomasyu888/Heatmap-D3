@@ -62,7 +62,7 @@ function heatmapdraw(selector,data) {
     var height = 600;
     var margintop = 130;
     var marginleft = 100;
-
+    var transTime = 1500;
     //if there are more than 100 x values, it doesn't make sense to show the label
     if (mainDat.dim[0] > 100) {
         marginleft=  0;
@@ -198,7 +198,7 @@ function heatmapdraw(selector,data) {
         controller.on('transform.colormap', function(_) {
             x.range([_.translate[0], width * _.scale[0] + _.translate[0]]);
             y.range([_.translate[1], height * _.scale[1] + _.translate[1]]);
-            draw(rect.transition().duration(500).ease("linear"));
+            draw(rect.transition().duration(transTime).ease("linear"));
         });
 
         var brushG = svg.append("g")
@@ -264,14 +264,13 @@ function heatmapdraw(selector,data) {
             .call(axis);
             axisNodes.selectAll("text")
             .style("text-anchor", "start")
-            .attr("id", function(d,i) { return rotated ? "xLab" + i : "yLab" + i })
-
+   			.style("font-size", scale.rangeBand());
 
         controller.on('transform.axis-' + (rotated ? 'x' : 'y'), function(_) {
             var dim = rotated ? 0 : 1;
             var rb = [_.translate[dim], (rotated ? width : height) * _.scale[dim] + _.translate[dim]];
             scale.rangeBands(rb);
-            var tAxisNodes = axisNodes.transition().duration(500).ease('linear');
+            var tAxisNodes = axisNodes.transition().duration(transTime).ease('linear');
             tAxisNodes.call(axis);
             // Set text-anchor on the non-transitioned node to prevent jumpiness
             // in RStudio Viewer pane
@@ -396,7 +395,7 @@ function heatmapdraw(selector,data) {
             var scaleBy = _.scale[rotated ? 0 : 1];
             var translateBy = _.translate[rotated ? 0 : 1];
             y.range([translateBy, height * scaleBy + translateBy]);
-            draw(lines.transition().duration(500).ease("linear"));
+            draw(lines.transition().duration(transTime).ease("linear"));
         });
         
         var brushG = svg.append("g")
@@ -541,7 +540,7 @@ function heatmapdraw(selector,data) {
                 y.range([_.translate[1], height * _.scale[1] + _.translate[1]])
             }
 
-            draw(annotation.transition().duration(500).ease("linear"));
+            draw(annotation.transition().duration(transTime).ease("linear"));
         });
 
         //gradLegend(lin,20,20)

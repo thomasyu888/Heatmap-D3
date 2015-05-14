@@ -39,7 +39,6 @@
 }
 
 .xAxis {
-  font-size: 4px;
   writing-mode: tb;
   position: absolute;
   top: 685px;
@@ -48,7 +47,6 @@
 }
 
 .yAxis {
-  font-size: 4px;
   position: absolute;
   top:220px;
   left:1347px;

@@ -473,8 +473,8 @@ function heatmapdraw(selector,data) {
                     return (rotated ? x(i%length) : 5*Math.floor(i/length));
                 })
                 .attr('y', function(d,i) { return (rotated? 5*Math.floor(i/length) : y(i%length)); })
-                .attr('width' , function(d) { return (rotated ? x(1) : 4); })
-                .attr('height', function(d) { return (rotated ? 4 : y(1)); })
+                .attr('width' , function(d) { return (rotated ? x(1)-x(0) : 4); })
+                .attr('height', function(d) { return (rotated ? 4 : y(1)-y(0)); })
         }
 
         draw(annotation);

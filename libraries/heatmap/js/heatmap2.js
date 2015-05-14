@@ -228,8 +228,8 @@ function heatmapdraw(selector,data) {
                     }
                 }
                 tip.show(output).style({
-                    top: d3.event.clientY + 15 + "px",
-                    left: d3.event.clientX + 15 + "px",
+                    top: d3.event.clientY -120 + "px",
+                    left: d3.event.clientX - 170 + "px",
                     opacity: 0.9
                 });
                 //controller.datapoint_hover({col:col, row:row, value:value});

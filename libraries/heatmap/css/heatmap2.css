@@ -1,6 +1,6 @@
 .node circle {
   fill: #fff;
-    stroke: steelblue;
+  stroke: steelblue;
   stroke-width: 1.5px;
 }
 
@@ -14,7 +14,6 @@
   user-select: none;
 }
 
-
 .colAnnote {
   position: absolute;
   left: 150px;
@@ -26,9 +25,9 @@
   top:220px;
 }
 .rootDend {
-    fill: none;
+  fill: none;
   stroke: #AAA;
-    stroke-width: 1px;
+  stroke-width: 1px;
   shape-rendering: crispEdges;
 }
 
@@ -37,11 +36,6 @@
   stroke: #AAA;
   stroke-width: 1px;
   shape-rendering: crispEdges;
-}
-.info {
-  position:absolute;
-  display:none;
-  font-size:10px;
 }
 
 .xAxis {
@@ -59,7 +53,6 @@
   top:220px;
   left:1347px;
   z-index:-15px
-
 }
 
 .colDend {
@@ -74,16 +67,12 @@
   top: 220px;
 }
 
-polyline.hover {
-  stroke: black;
-  stroke-width:3px;
-}
-
 .colormap {
   position: absolute;
   left: 150px;
   top: 220px;
   shape-rendering: crispEdges;
+  z-index:1;
 }
 .legends {
   position: absolute;
@@ -97,9 +86,5 @@ polyline.hover {
   background-color: white;
   padding: 6px 12px;
   white-space:nowrap;
-}
-.info {
-  position:absolute;
-  display:none;
-  font-size:10px;
+  z-index:2;
 }

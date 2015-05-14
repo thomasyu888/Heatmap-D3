@@ -73,8 +73,8 @@ function heatmapdraw(selector,data) {
     }
     
     //Set xScale and yScale
-    var x = d3.scale.linear().range([0, width-marginleft]);
-    var y = d3.scale.linear().range([0, height-margintop]);
+    //var x = d3.scale.linear().range([0, width-marginleft]);
+    //var y = d3.scale.linear().range([0, height-margintop]);
 
     //Heatmap colors
 
@@ -91,7 +91,7 @@ function heatmapdraw(selector,data) {
     var row = (data.rows ==null) ? 0 : dendrogram(el.select('svg.rowDend'), data.rows, false, 250, height-margintop);
     var col = (data.cols ==null) ? 0 : dendrogram(el.select('svg.colDend'), data.cols, true, width-marginleft, 250);
     var heatmap = heatmapGrid(el.select('svg.colormap'), mainDat, width-marginleft,height-margintop);
-    //var colAnnots = (colMeta == null) ? 0 : drawAnnotate(el.select('svg.colAnnote'),colAnnote, true, width-marginleft,colHead.length*5);
+    var colAnnots = (colMeta == null) ? 0 : drawAnnotate(el.select('svg.colAnnote'),colAnnote, true, width-marginleft,colHead.length*5);
     var rowAnnots = (rowMeta == null) ? 0: drawAnnotate(el.select('svg.rowAnnote'),rowAnnote, false,rowHead.length*5,height-margintop);
 	var xLabel = (mainDat.dim[0] > 100) ? 0 : axis(el.select('svg.xAxis'),data.matrix.cols,true,width-marginleft,150)
     var yLabel = (mainDat.dim[1] > 300) ? 0 : axis(el.select('svg.yAxis'),data.matrix.rows,false, 100, height-margintop)
@@ -110,9 +110,13 @@ function heatmapdraw(selector,data) {
         var rows = data.dim[0];
         
         var merged = data.data;
-        
-        x.domain([0, cols]).range([0, width]);
-        y.domain([0, rows]).range([0, height]);
+        var x = d3.scale.linear()
+            .domain([0, cols])
+            .range([0, width]);
+
+        var y = d3.scale.linear()
+            .domain([0, rows])
+            .range([0, height]);
 
         var tip = d3.tip()
             .attr('class', 'd3heatmap-tip')
@@ -442,13 +446,17 @@ function heatmapdraw(selector,data) {
     */
     function drawAnnotate(svg,datum, rotated,width,height) {
 
-        //x.domain([0, cols]).range([0, width-marginleft]);
         svg.attr("width",width).attr("height",height)
 
         var scaling = d3.scale.category10()
         var length = datum.data.length/datum.header.length
+        var x = d3.scale.linear()
+            .domain([0, length])
+            .range([0, width]);
 
-        y.domain([0, length]).range([0, height]);
+        var y = d3.scale.linear()
+            .domain([0, length])
+            .range([0, height]);
 
         for (k=0;k<datum.header.length;k++) {
         	//If the data is not cateogorical value, get all the values to get a linear scale
@@ -479,10 +487,13 @@ function heatmapdraw(selector,data) {
 
         draw(annotation);
 
-
         controller.on('transform.annotation-' + (rotated ? 'x' : 'y'), function(_) {
-            //x.range([_.translate[0], width * _.scale[0] + _.translate[0]]);
-            y.range([_.translate[1], height * _.scale[1] + _.translate[1]]);
+            if (rotated) {
+                x.range([_.translate[0], width * _.scale[0] + _.translate[0]])
+            } else { 
+                y.range([_.translate[1], height * _.scale[1] + _.translate[1]])
+            }
+
             draw(annotation.transition().duration(500).ease("linear"));
         });
 
